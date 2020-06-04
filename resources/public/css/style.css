@@ -1,0 +1,554 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;900&display=swap");
+@import url("/css/blueprint.min.css");
+
+input, textarea, button {
+  line-height: 2.8;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Nunito", sans-serif;
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+  padding: 0 15px;
+  margin: 5px 0;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+textarea {
+  resize: none;
+  width: 100%;
+  line-height: 1;
+  padding: 15px;
+}
+
+input:focus, textarea:focus {
+  border-width: 1.5px;
+  border-color: var(--primary-color);
+  margin: 4.5px -0.5px;
+}
+
+input::placeholder, textarea:placeholder {
+  color: var(--border-color);
+  font-weight: 400;
+}
+
+.u-rounded {
+  border-radius: 50px;
+}
+
+input[type=submit], button {
+  cursor: pointer;
+  background-color: white;
+  font-weight: 600;
+}
+input[type=submit].input--active, button.input--active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.label--large {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table td, table th {
+  padding: 15px 10px;
+  color: var(--text-md);
+  font-weight: 600;
+  text-align: left;
+}
+table td:first-child, table th:first-child {
+  padding-left: 20px;
+  padding-right: 0;
+}
+table td:last-child, table th:last-child {
+  padding-right: 20px;
+}
+table td:nth-last-child(1), table td:nth-last-child(2), table td:nth-last-child(3), table td:nth-last-child(4), table th:nth-last-child(1), table th:nth-last-child(2), table th:nth-last-child(3), table th:nth-last-child(4) {
+  text-align: right;
+}
+table td img, table th img {
+  vertical-align: top;
+  margin-right: 5px;
+}
+table td.table__nameRow, table th.table__nameRow {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 960px) {
+  table td.table__nameRow, table th.table__nameRow {
+    max-width: 250px;
+  }
+}
+table th {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+table tbody tr {
+  border-color: var(--border-color);
+  border-style: solid;
+  border-width: 1px 0 1px 0;
+  cursor: pointer;
+}
+table tbody tr:nth-child(odd) {
+  background-color: var(--accent-color);
+}
+
+.modalWrapper {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  display: none;
+  padding: 20px;
+  z-index: 2;
+}
+.modalWrapper .card.modal {
+  overflow: hidden;
+  position: relative;
+}
+.modalWrapper .card.modal .modal__closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.modalWrapper .card.modal > div {
+  border-bottom: 1px solid var(--border-color);
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div:not(:first-child) {
+    padding: 0 30px;
+  }
+}
+.modalWrapper .card.modal > div > div {
+  padding: 30px 20px;
+}
+.modalWrapper .card.modal > div > div p {
+  margin: 10px 0;
+  text-align: justify;
+}
+.modalWrapper .card.modal > div > div p b {
+  color: var(--text-dark);
+}
+.modalWrapper .card.modal > div > div > div.modal__header__profileWrapper {
+  width: 100%;
+}
+.modalWrapper .card.modal > div > div > div.modal__header__profileWrapper p {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 100px;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div > div > div.u-fit {
+    width: unset;
+  }
+}
+.modalWrapper .card.modal > div > div h3 {
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+.modalWrapper .card.modal > div.modal__reviews {
+  background-color: #FAFAFA;
+  border-bottom: none;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews {
+    padding: 30px;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header {
+  display: flex;
+  align-items: center;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header img {
+  width: 30px;
+  height: 30px;
+  margin: 0 8px;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header img:last-of-type {
+  margin-left: 16px;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header span {
+  font-weight: 600;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header h3 {
+  margin: 0 20px;
+  color: var(--text-md);
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls {
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls {
+    flex-direction: row;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div {
+  padding: 0 10px;
+  display: flex;
+  width: 100%;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div {
+    width: unset;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  justify-content: center;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input {
+    width: unset;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button img, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input img {
+  margin-right: 10px;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button img:first-of-type, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input img:first-of-type {
+  background-color: white;
+  border-radius: 30px;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button:first-child, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input:first-child {
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button:last-child, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input:last-child {
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button[type=text], .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input[type=text] {
+  width: 100%;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review {
+  position: relative;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 25px 170px 25px 90px;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review p {
+  font-size: 12px;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__rating {
+    position: absolute;
+    top: 0;
+    left: 30px;
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__rating img {
+    width: 30px;
+    height: 30px;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated {
+    display: flex;
+    height: 100%;
+    top: 0;
+    right: 40px;
+    align-items: center;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated p, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated strong {
+  margin: 0;
+  text-align: right;
+  width: 100%;
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated strong {
+  color: var(--primary-color);
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author {
+  display: flex;
+  justify-content: space-between;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author {
+    justify-content: left;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author p {
+  margin: 0;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author p:first-child {
+    margin-right: 10px;
+  }
+}
+.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__content p {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 24px 0;
+}
+@media (min-width: 720px) {
+  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__content p {
+    margin: 12px 0 0 0;
+  }
+}
+
+:root {
+  --background-color:#f6f7fb;
+  --text-light: grey;
+  --text-md: #555B68;
+  --text-dark: #4D4B5A;
+  --border-color: #ddd;
+  --primary-color: #00ADE8;
+  --accent-color: #F0FAFE;
+  --breakpoint-md: 720px;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.text--larger {
+  font-size: 18px;
+}
+
+nav {
+  background-color: white;
+  box-shadow: 0 1px 0 0 var(--border-color);
+}
+nav > div {
+  justify-content: space-between;
+  padding: 16px;
+}
+@media (min-width: 960px) {
+  nav > div {
+    padding: 16px 0;
+  }
+}
+nav > div .navbar__brand a {
+  height: 100%;
+}
+nav > div .navbar__brand a img {
+  margin: auto 0;
+  margin-right: 10px;
+}
+nav > div .navbar__brand a p {
+  color: var(--text-md);
+  font-weight: 600;
+  font-size: 18px;
+  margin: auto 0;
+}
+@media (min-width: 960px) {
+  nav > div .navbar__brand a p {
+    font-size: 22px;
+  }
+}
+nav > div .collapse {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 20px;
+}
+nav > div .collapse.u-show {
+  display: flex;
+}
+nav > div .collapse a {
+  margin: auto 10px;
+}
+@media (min-width: 960px) {
+  nav > div .collapse {
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    margin: 0;
+  }
+}
+nav > div .navbar__togglr {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background: none;
+  border: none;
+  outline: none;
+}
+nav > div .navbar__togglr .navbar__togglr__bars {
+  width: 16px;
+  height: 2px;
+  background-color: #555B68;
+  display: block;
+  border-radius: 10px;
+  transition: all 0.2s;
+  margin-top: 3px;
+}
+
+body {
+  margin: 0;
+  background-color: var(--background-color);
+  font-family: Nunito, "sans-serif";
+}
+
+.card {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 20px;
+}
+.card h4 {
+  color: var(--text-md);
+  text-align: left;
+  margin: 14px 0;
+}
+.card p {
+  color: var(--text-light);
+  text-align: left;
+  margin: 0;
+}
+
+.title {
+  color: var(--primary-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 20px;
+  margin: 12px 0;
+}
+.title span {
+  color: var(--text-md);
+  margin-left: 20px;
+}
+
+#hotValidators {
+  position: relative;
+  padding: 24px 0;
+}
+#hotValidators .title {
+  margin: 12px 22px;
+  text-transform: none;
+  color: var(--text-md);
+  font-weight: 400;
+}
+@media (min-width: 960px) {
+  #hotValidators .title {
+    margin-left: 5px;
+  }
+}
+#hotValidators .cardWrapper {
+  display: flex;
+  overflow-x: auto;
+}
+#hotValidators .cardWrapper .card {
+  margin-right: 20px;
+  min-width: 176px;
+  text-align: center;
+}
+#hotValidators .cardWrapper .card:first-child {
+  margin-left: 20px;
+}
+#hotValidators .cardWrapper::after {
+  content: "";
+  flex: 0 0 5px;
+}
+@media (min-width: 960px) {
+  #hotValidators .cardWrapper {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: auto;
+    gap: 0 20px;
+  }
+  #hotValidators .cardWrapper h2 {
+    grid-column: 1/6;
+  }
+  #hotValidators .cardWrapper .card {
+    margin: 0 !important;
+  }
+  #hotValidators .cardWrapper::after {
+    display: none;
+  }
+}
+#hotValidators::after {
+  content: "";
+  position: absolute;
+  box-shadow: inset -20px 0px 30px -30px rgba(0, 0, 0, 0.8);
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  pointer-events: none;
+}
+@media (min-width: 960px) {
+  #hotValidators::after {
+    display: none;
+  }
+}
+
+#topValidators {
+  overflow: hidden;
+  border-radius: 0;
+}
+#topValidators .topValidators__header {
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+}
+@media (min-width: 960px) {
+  #topValidators {
+    border-radius: 20px;
+  }
+}
+
+#settings {
+  padding: 20px 40px;
+}
+#settings h2 {
+  margin-bottom: 40px;
+}
+#settings textarea {
+  margin-bottom: 20px;
+}
+#settings .settings__bottom {
+  text-align: right;
+  padding: 0;
+  border: none;
+  margin-top: 10px;
+}
+
+.u-cutText {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,188 @@
+.modalWrapper
+  background-color: rgba(0, 0, 0, 0.5)
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  overflow: auto
+  display: none
+  padding: 20px
+  z-index: 2
+
+  .card.modal
+    overflow: hidden
+    position: relative
+    
+    .modal__closeBtn
+      position: absolute
+      top: 20px
+      right: 20px
+      padding: 0
+      margin: 0
+      line-height: 1        
+      background: none
+      border: none
+      cursor: pointer
+      
+    > div
+      border-bottom: 1px solid var(--border-color)
+      &:not(:first-child)
+        @media (min-width: 720px)
+          padding: 0 30px
+
+      > div
+        padding: 30px 20px
+
+        p
+          margin: 10px 0
+          text-align: justify
+
+          b
+            color: var(--text-dark)
+
+        > div
+          //width: 50%
+
+          &.modal__header__profileWrapper
+            width: 100%
+
+            p
+              overflow: hidden
+              white-space: nowrap
+              max-width: 100px
+          
+          &.u-fit
+            @media (min-width: 720px)
+              width: unset
+          
+
+        h3
+          margin-top: 24px
+          margin-bottom: 8px
+    
+      &.modal__reviews
+        background-color: #FAFAFA
+        border-bottom: none
+        @media (min-width: 720px)
+          padding: 30px
+
+        .modal__reviews__header
+          display: flex
+          align-items: center
+
+          img
+            width: 30px
+            height: 30px
+            margin: 0 8px
+            &:last-of-type
+              margin-left: 16px
+
+          span
+            font-weight: 600
+
+          h3
+            margin: 0 20px
+            color: var(--text-md)
+
+        .modal__reviews__controls
+          padding: 0 10px
+          display: flex
+          flex-direction: column
+          @media (min-width: 720px)
+            flex-direction: row
+
+          > div
+            padding: 0 10px
+            display: flex
+            width: 100%
+            @media (min-width: 720px)
+              width: unset
+
+            button, input
+              display: flex
+              align-items: center
+              width: 50%
+              justify-content: center
+              @media (min-width: 720px)
+                width: unset
+
+              img
+                margin-right: 10px
+                &:first-of-type
+                  background-color: white
+                  border-radius: 30px
+
+              &:first-child
+                border-right: none
+                border-top-right-radius: 0
+                border-bottom-right-radius: 0
+              &:last-child
+                border-left: none
+                border-top-left-radius: 0
+                border-bottom-left-radius: 0
+              &[type="text"]
+                width: 100%
+
+        .modal__reviews__reviews
+
+          .review
+            position: relative
+            @media (min-width: 720px)
+              display: flex
+              flex-direction: column-reverse
+              padding: 25px 170px 25px 90px
+
+            p
+              font-size: 12px
+
+            .review__rating
+              @media (min-width: 720px)
+                position: absolute
+                top: 0
+                left: 30px
+                display: flex
+                height: 100%
+                align-items: center
+
+                img
+                  width: 30px
+                  height: 30px
+
+            .review__delegated
+              position: absolute
+              top: 20px
+              right: 20px
+              @media (min-width: 720px)
+                display: flex
+                height: 100%
+                top: 0
+                right: 40px
+                align-items: center
+
+              p, strong
+                margin: 0
+                text-align: right
+                width: 100%
+              strong
+                color: var(--primary-color)
+
+            .review__author
+              display: flex
+              justify-content: space-between
+              @media (min-width: 720px)
+                justify-content: left
+              
+              p
+                margin: 0
+                @media (min-width: 720px)
+                  &:first-child
+                    margin-right: 10px
+            
+            .review__content p
+              font-size: 16px
+              font-weight: 600
+              color: var(--text-dark)
+              margin: 24px 0
+              @media (min-width: 720px)
+                margin: 12px 0 0 0

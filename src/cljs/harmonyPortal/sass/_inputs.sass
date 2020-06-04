@@ -1,0 +1,44 @@
+input, textarea, button
+  line-height: 2.8
+  font-size: 16px
+  font-weight: 500
+  font-family: 'Nunito', sans-serif
+  border: 1px solid var(--border-color)
+  border-radius: 15px
+  padding: 0 15px
+  margin: 5px 0
+  outline: none
+  -webkit-appearance: none
+
+textarea
+  resize: none
+  width: 100%
+  line-height: 1
+  padding: 15px
+
+input:focus, textarea:focus
+  border-width: 1.5px
+  border-color: var(--primary-color)
+  margin: 4.5px -0.5px
+
+input::placeholder, textarea:placeholder
+  color: var(--border-color)
+  font-weight: 400
+
+.u-rounded
+  border-radius: 50px
+
+input[type="submit"], button
+  cursor: pointer
+  background-color: white
+  font-weight: 600
+
+  &.input--active
+    background-color: var(--primary-color)
+    color: white
+
+.label--large
+  font-size: 20px
+  font-weight: 600
+  color: var(--text-dark)
+  margin-top: 20px
