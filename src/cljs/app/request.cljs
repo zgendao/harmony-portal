@@ -12,9 +12,9 @@
 (def all-validator (atom {}))
 
 (defn request []
-  (go (let [all-information-response (<! (http/get "http://staking.hmny.io:8090/networks/harmony/validators" {:with-credentials? false :headers {"Content-Type" "application/json"}}))
-            validators ((all-information-response :body) :validators)]
-        (doseq [[id validator] (map-indexed vector validators)]
+  (go (let [];all-information-response (<! (http/get "http://staking.hmny.io:8090/networks/harmony/validators" {:with-credentials? false :headers {"Content-Type" "application/json"}}))
+            ;validators ((all-information-response :body) :validators)]
+        (doseq [[id validator] (map-indexed vector @const)]
           (let [address (validator :address)
                 delegations (validator :delegations)
                 shift 0.000000000000000001

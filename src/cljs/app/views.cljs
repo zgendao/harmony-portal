@@ -10,6 +10,8 @@
 (def state (atom {:navbar-open false
                   :modal nil
                   :settings false}))
+(def review (atom ""))
+(def recommend (atom true))
 
 (defn commas [num]
   (replace (str num) #"\B(?=(\d{3})+(?!\d))" ","))
@@ -75,9 +77,6 @@
      [:textarea {:rows "3" :placeholder "Write an answer"}]]
     [:div.settings__bottom
      [:input {:type "submit" :value "Save Changes"}]]]])
-
-(def review (atom ""))
-(def recommend (atom true))
 
 (defn modal [id]
   (let [seq-map (into (hash-map) (map-indexed (fn [i value] [i value]) @data))
