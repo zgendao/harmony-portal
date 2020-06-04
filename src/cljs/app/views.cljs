@@ -1,7 +1,7 @@
-(ns harmonyPortal.views
+(ns app.views
   (:require [reagent.core :as reagent :refer [atom]]
-            [harmonyPortal.storage :refer [app-state local]]
-            [harmonyPortal.request :refer [data request]]
+            [app.storage :refer [app-state local]]
+            [app.request :refer [data request]]
             [goog.string :as gstring :refer [format]]
             [goog.string.format]
             [clojure.string :as str :refer [includes? lower-case replace]])
@@ -32,12 +32,22 @@
     (swap! state assoc :modal nil)
     (set! (.. js/document -body -style -overflow) "auto")))
 
+(defn already-rated [id]
+  (if (map? (get-in @local [:reviews (keyword id)])) true false))
+
+(defn rate [id recommend review]
+  (do
+    (swap! local assoc-in [:reviews (keyword id)] {:recommend recommend :review review})
+    (swap! app-state update-in [:reviews (keyword id)] (fn [x] (conj x {:recommend recommend :review review})))))
+
 (defn loading []
   [:p "loading.."])
 
 (defn navbar []
   [:nav
+   ;(reset! app-state {:reviews {}})
    [:div {:bp "container flex"}
+    [:p (str @app-state)]
     [:div.navbar__brand
      [:a {:href "https://harmony.one/" :target "_blank" :bp "flex"}
       [:img {:src "./images/logo1.png" :width "25px" :height "25px"}]
@@ -65,9 +75,14 @@
     [:div.settings__bottom
      [:input {:type "submit" :value "Save Changes"}]]]])
 
+(def review (atom ""))
+(def recommend (atom true))
+
 (defn modal [id]
   (let [seq-map (into (hash-map) (map-indexed (fn [i value] [i value]) @data))
-        validator (seq-map id)]
+        validator (seq-map id)
+        rec (reduce #(if (%2 :recommend) (inc %1) %1) 0 (get-in @app-state [:reviews (:address validator)]))
+        warn (reduce #(if (%2 :recommend) %1 (inc %1)) 0 (get-in @app-state [:reviews (:address validator)]))]
     [:div.modalWrapper {:style {:display (if (@state :modal) "block" "none")}}
      [:div.card.modal {:bp "padding--none container"}
       [:div {:bp "grid gap-none"}
@@ -112,23 +127,31 @@
       [:div.modal__reviews
        [:div.modal__reviews__header
         [:img {:src "/images/recommend_icon.svg"}]
-        [:span "43"]
+        [:span (if rec rec 0)]
         [:img {:src "/images/warning_icon.svg"}]
-        [:span "10"]
+        [:span (if warn warn 0)]
         [:h3 "2 REVIEWS"]]
-       [:div.modal__reviews__controls
-        [:div
-         [:button {:class "input--active" :type "button"}
-          [:img {:src "/images/recommend_icon.svg"}]
-          "Recommend"]
-         [:button {:type "button"}
-          [:img {:src "/images/warning_icon.svg"}]
-          "Warning"]]
-        [:div {:bp "fill"}
-         [:input {:type "text" :placeholder "Write a review"}]
-         [:input {:class "input--active" :type "submit" :value "Send"}]]]
+       (when-not (already-rated (:address validator))
+         [:div.modal__reviews__controls
+          [:div
+           [:button {:class (when @recommend "input--active") :type "button" :on-click #(reset! recommend true)}
+            [:img {:src "/images/recommend_icon.svg"}]
+            "Recommend"]
+           [:button {:class (when-not @recommend "input--active") :type "button" :on-click #(reset! recommend false)}
+            [:img {:src "/images/warning_icon.svg"}]
+            "Warning"]]
+          [:div {:bp "fill"}
+           [:input {:type "text"
+                    :placeholder "Write a review"
+                    :value @review
+                    :on-change #(reset! review (-> % .-target .-value))}]
+           [:input {:class "input--active"
+                    :type "submit"
+                    :value "Send"
+                    :on-click #(rate (:address validator) @recommend @review)}]]])
        [:div.modal__reviews__reviews
         [:div.card.review
+         ;(println (get-in @app-state [:reviews (:address validator)]))
          [:div.review__rating
           [:img {:src "/images/recommend_icon.svg" :width "26px" :height "26px"}]]
          [:div.review__delegated
@@ -175,18 +198,18 @@
            [:th "Fees"]
            [:th "Uptime"]]]
          [:tbody
-          (keep-indexed
-           (fn [i validator]
-             (when (includes? (lower-case (:name validator)) (lower-case @search))
-               [:tr {:on-click #(open-modal i)}
-                [:td [:img {:src "/images/recommend_icon.svg"}] "10"]
-                [:td [:img {:src "/images/warning_icon.svg"}] "10"]
-                [:td.table__nameRow {:title (:name validator)} (:name validator)]
-                [:td (pformat (:return validator))]
-                [:td (vformat (:total-stake validator))]
-                [:td (pformat (:fee validator))]
-                [:td (pformat (:uptime validator))]]))
-           @data)]]]]]]))
+          (for [validator @data]
+            (let [rec (get-in @app-state [(:id validator) :rec])
+                  warn (get-in @app-state [(:id validator) :warn])]
+              (when (includes? (lower-case (:name validator)) (lower-case @search))
+                [:tr {:on-click #(open-modal (:id validator))}
+                 [:td [:img {:src "/images/recommend_icon.svg"}] (if rec rec 0)]
+                 [:td [:img {:src "/images/warning_icon.svg"}] (if warn warn 0)]
+                 [:td.table__nameRow {:title (:name validator)} (:name validator)]
+                 [:td (pformat (:return validator))]
+                 [:td (vformat (:total-stake validator))]
+                 [:td (pformat (:fee validator))]
+                 [:td (pformat (:uptime validator))]])))]]]]]]))
 
 (defn portal []
   [:<>

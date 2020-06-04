@@ -1,2 +1,2 @@
-{:require [harmonyPortal.app]
+{:require [app.app]
  :compiler-options {:asset-path "js/app.out"}}

@@ -1,7 +1,7 @@
-(ns harmonyPortal.core
+(ns app.core
   (:gen-class)
   (:require [system.repl :refer [set-init! start]]
-            [harmonyPortal.system :as system]))
+            [app.system :as system]))
 
 (defn -main
   "I don't do a whole lot ... yet."

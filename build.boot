@@ -1,4 +1,4 @@
-(def project 'harmonyPortal)
+(def project 'app)
 (def version "0.1.1")
 
 (set-env!
@@ -76,18 +76,18 @@
                  [im.chit/hara.io.scheduler "2.5.10"]])
 
 (task-options!
- aot {:namespace   #{'harmonyPortal.core}}
+ aot {:namespace   #{'app.core}}
  pom {:project     project
       :version     version
       :description ""
       :url ""
       :scm {:url ""}
       :license {"MIT" ""}}
- jar {:main        'harmonyPortal.core
-      :file        (str "harmonyPortal-" version "-standalone.jar")})
+ jar {:main        'app.core
+      :file        (str "app-" version "-standalone.jar")})
 
 (require '[system.repl :refer [init start stop go reset]]
-         '[harmonyPortal.system :refer [dev-system]]
+         '[app.system :refer [dev-system]]
          '[environ.boot :refer [environ]]
          '[nha.boot-uglify  :refer [uglify]]
          '[system.boot :refer [system run]])

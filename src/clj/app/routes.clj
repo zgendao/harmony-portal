@@ -1,4 +1,4 @@
-(ns harmonyPortal.routes
+(ns app.routes
   (:require
    [compojure.core :refer [routes GET ANY]]
    [compojure.route :as route]

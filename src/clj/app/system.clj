@@ -1,11 +1,11 @@
-(ns harmonyPortal.system
+(ns app.system
   (:require [com.stuartsierra.component :as component]
             [environ.core :refer [env]]
             [hara.io.scheduler :as hara]
             [com.brunobonacci.sophia :as sph]
             [differ.core :as differ]
 
-            [harmonyPortal.routes :refer [site]]
+            [app.routes :refer [site]]
 
             [taoensso.sente.server-adapters.http-kit :refer [get-sch-adapter]]
 
@@ -143,7 +143,8 @@
       nil)
 
     (doseq [listener (get @(get-in system [:cache :clients]) client-id)]
-      (send-fn listener [id ?data]))))
+      (when-not (= network-id listener)
+        (send-fn listener [id ?data])))))
 
 (defn dev-system []
   (component/system-map

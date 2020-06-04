@@ -1,4 +1,4 @@
-(ns harmonyPortal.data
+(ns app.data
   (:require [reagent.core :as reagent :refer [atom]]))
 
 (def dat (atom [{:signed_blocks 50,

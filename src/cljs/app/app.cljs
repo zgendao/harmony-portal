@@ -1,9 +1,9 @@
-(ns harmonyPortal.app
+(ns app.app
   (:require
    [reagent.core :as r]
-   [harmonyPortal.views :refer [portal]]
-   [harmonyPortal.storage :refer [app-state]]
-   [harmonyPortal.request :refer [request]]
+   [app.views :refer [portal]]
+   [app.storage :refer [app-state]]
+   [app.request :refer [request fetch-validators]]
    [bide.core :as b]))
 
 (enable-console-print!)
@@ -24,8 +24,8 @@
 (defn make-bide-router [rmap]
   (b/router (transform-map rmap)))
 
-(def route-map {:harmonyPortal.home "/home"
-                :harmonyPortal.about "/about"})
+(def route-map {:app.home "/home"
+                :app.about "/about"})
 
 (def router (make-bide-router route-map))
 
@@ -38,11 +38,11 @@
 ; (defn page [name app-state]
 ;   [:div
 ;    [:nav
-;     [:div [nav-link :harmonyPortal.home "Homee"]]
-;     [:div [nav-link :harmonyPortal.about "About"]]]
+;     [:div [nav-link :app.home "Homee"]]
+;     [:div [nav-link :app.about "About"]]]
 ;    (case name
-;      :harmonyPortal.home (home-page app-state)
-;      :harmonyPortal.about [about-page])])
+;      :app.home (home-page app-state)
+;      :app.about [about-page])])
 
 (defn on-navigate
   "A function which will be called on each route change."
@@ -51,9 +51,10 @@
     (.getElementById js/document "app")))
 
 (defn ^:export run [app-state]
-  (b/start! router {:default :harmonyPortal.home
+  (b/start! router {:default :app.home
                     :html5? true
                     :on-navigate (fn [name params query] (on-navigate name params query app-state))})
-  (request))
+  (request)
+  (fetch-validators))
 
 (run app-state)

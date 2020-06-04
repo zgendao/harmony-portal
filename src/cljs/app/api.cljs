@@ -1,4 +1,4 @@
-(ns harmonyPortal.api
+(ns app.api
   (:require
    [reagent.core :as r]
    [brave.zente :as zente]
