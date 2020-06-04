@@ -11,7 +11,6 @@
     [:meta {:charset "utf-8"}]
     [:link {:href "/css/style.css" :rel "stylesheet" :type "text/css"}]
     [:link {:rel "icon" :href "/images/favicon.ico" :type "image/x-icon"}]
-    ;[:link {:href "/css/blueprint.min.css" :type "text/html" :rel "stylesheet"}]
     [:title "Harmony Staking Community"]]
    [:body
     [:div#app]

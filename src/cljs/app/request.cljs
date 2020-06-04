@@ -12,16 +12,16 @@
 (def all-validator (atom {}))
 
 (defn request []
-  (go (let [];all-information-response (<! (http/get "http://staking.hmny.io:8090/networks/harmony/validators" {:with-credentials? false :headers {"Content-Type" "application/json"}}))]
-            ;validators ((all-information-response :body) :validators)]
-        (doseq [[id validator] (map-indexed vector @const)]
+  (go (let [all-information-response (<! (http/get "http://staking.hmny.io:8090/networks/harmony/validators" {:with-credentials? false :headers {"Content-Type" "application/json"}}))
+            validators ((all-information-response :body) :validators)]
+        (doseq [[id validator] (map-indexed vector validators)]
           (let [address (validator :address)
                 delegations (validator :delegations)
                 shift 0.000000000000000001
                 total-stake (* shift (validator :total_stake))
                 self-stake (* shift (validator :self_stake))]
             (do
-              (swap! app-state assoc-in [:reviews (keyword (:address validator))] [])
+              (swap! all-validator assoc-in [:reviews (keyword (:address validator))] {})
               (swap! data conj (assoc {}
                                       :id id
                                       :address address
@@ -42,5 +42,5 @@
                                       :height (validator :creation-height)))))))))
 
 (defn fetch-validators []
-  (println all-validator))
-  ;(merge all-validator (:reviews @app-state)))
+  (println (str @all-validator)))
+  ;(reset (:reviews app-state) (merge (:reviews @app-state) (:reviews @all-validator))))
