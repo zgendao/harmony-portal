@@ -41,6 +41,5 @@
                                       :uptime (validator :uptime_percentage)
                                       :height (validator :creation-height)))))))))
 
-(defn fetch-validators []
-  (println (str @all-validator)))
+(defn fetch-validators [])
   ;(reset (:reviews app-state) (merge (:reviews @app-state) (:reviews @all-validator))))

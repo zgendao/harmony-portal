@@ -84,8 +84,10 @@
         reviews (get-in @app-state [:reviews (keyword (:address validator))])
         rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 reviews)
         warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 reviews)]
-    [:div.modalWrapper {:style {:display (if (@state :modal) "block" "none")}}
-     [:div.card.modal {:bp "padding--none container"}
+    [:div.modalWrapper {:style {:display (if (@state :modal) "block" "none")}
+                        :on-click #(close-modal)}
+                        ;:on-click #(set! (.-display (.-style (second (.getElementsByClassName js/document "modalWrapper")))) "none")}
+     [:div.card.modal {:bp "padding--none container" :on-click (fn [e] (.stopPropagation e))}
       [:div {:bp "grid gap-none"}
        [:div {:bp "12 6@md flex" :style {:border-right "1px solid var(--border-color)"}}
         [:div.modal__header__profileWrapper.u-fit {:bp "flex padding--lg text-center"}
@@ -152,6 +154,7 @@
                     :on-click #(rate (:address validator) @recommend @review)}]]])
        [:div.modal__reviews__reviews
         (for [[k v] (get-in @app-state [:reviews (keyword (:address validator))])]
+          ^{:key k}
           [:div.card.review
            [:div.review__rating
             [:img {:src (str "/images/" (if (:recommend v) "recommend" "warning") "_icon.svg") :width "26px" :height "26px"}]]
@@ -163,7 +166,8 @@
             [:p (:review v)]]
            [:div.review__author
             [:p "oneq3xye3"]
-            [:p "2020.06.06"]]])]]
+            (let [d (js/Date. k)]
+              [:p (str (.getFullYear d) "." (.slice (+ "0" (inc (.getMonth d))) (- 2)) "." (.slice (+ "0" (.getDate d)) (- 2)))])]])]]
       [:button.modal__closeBtn {:on-click #(close-modal)} "X"]]]))
 
 (def search (atom ""))
@@ -176,6 +180,7 @@
      [:h2.title "Hot Validators"]
      [:div.cardWrapper
       (for [validator (take-last 5 (into [] (filter #(%1 :active) @data)))]
+        ^{:key (:id validator)}
         [:div.card {:on-click #(open-modal (.indexOf @data validator))}
          [:img {:src "./images/logo1.png" :width "25px" :height "25px"}]
          [:h4 (:name validator)]
@@ -199,19 +204,21 @@
          [:th "Fees"]
          [:th "Uptime"]]]
        [:tbody
-        (for [validator @data]
-          (let [reviews (get-in @app-state [:reviews (keyword (:address validator))])
-                rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 reviews)
-                warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 reviews)]
-            (when (includes? (lower-case (:name validator)) (lower-case @search))
-              [:tr {:on-click #(open-modal (:id validator))}
-               [:td [:img {:src "/images/recommend_icon.svg"}] (if rec rec 0)]
-               [:td [:img {:src "/images/warning_icon.svg"}] (if warn warn 0)]
-               [:td.table__nameRow {:title (:name validator)} (:name validator)]
-               [:td (pformat (:return validator))]
-               [:td (vformat (:total-stake validator))]
-               [:td (pformat (:fee validator))]
-               [:td (pformat (:uptime validator))]])))]]]]]])
+        (doall
+         (for [validator @data]
+           (let [reviews (get-in @app-state [:reviews (keyword (:address validator))])
+                 rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 reviews)
+                 warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 reviews)]
+             (when (includes? (lower-case (:name validator)) (lower-case @search))
+               ^{:key (:id validator)}
+               [:tr {:on-click #(open-modal (:id validator))}
+                [:td [:img {:src "/images/recommend_icon.svg"}] (if rec rec 0)]
+                [:td [:img {:src "/images/warning_icon.svg"}] (if warn warn 0)]
+                [:td.table__nameRow {:title (:name validator)} (:name validator)]
+                [:td (pformat (:return validator))]
+                [:td (vformat (:total-stake validator))]
+                [:td (pformat (:fee validator))]
+                [:td (pformat (:uptime validator))]]))))]]]]]])
 
 (defn portal []
   [:<>
