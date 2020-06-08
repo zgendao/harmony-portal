@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;900&display=swap");
 @import url("/css/blueprint.min.css");
-
 input, textarea, button {
   line-height: 2.8;
   font-size: 16px;
@@ -21,7 +20,7 @@ textarea {
   padding: 15px;
 }
 
-input:focus, textarea:focus {
+input:not(.input--active):not([type=checkbox]):focus, textarea:focus {
   border-width: 1.5px;
   border-color: var(--primary-color);
   margin: 4.5px -0.5px;
@@ -53,6 +52,59 @@ input[type=submit].input--active, button.input--active {
   margin-top: 20px;
 }
 
+.switch {
+  position: relative;
+  padding-right: 20px;
+  font-size: 14px;
+  line-height: 2;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  border: none;
+  margin: 0;
+}
+
+.slider {
+  position: absolute;
+  width: 42px;
+  height: 23px;
+  cursor: pointer;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: #ccc;
+  border-radius: 15px;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(17px);
+  -ms-transform: translateX(17px);
+  transform: translateX(17px);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -77,17 +129,6 @@ table td img, table th img {
   vertical-align: top;
   margin-right: 5px;
 }
-table td.table__nameRow, table th.table__nameRow {
-  max-width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-@media (min-width: 960px) {
-  table td.table__nameRow, table th.table__nameRow {
-    max-width: 250px;
-  }
-}
 table th {
   text-transform: uppercase;
   font-weight: 700;
@@ -108,15 +149,23 @@ table tbody tr:nth-child(odd) {
   top: 0;
   left: 0;
   width: 100%;
+  padding: 0 20px;
+  z-index: 2;
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  transition: height 0ms 200ms, opacity 200ms 0ms;
+}
+.modalWrapper.u-show {
+  opacity: 1;
   height: 100%;
   overflow: auto;
-  display: none;
-  padding: 20px;
-  z-index: 2;
+  transition: height 0ms 0ms, opacity 200ms 0ms;
 }
 .modalWrapper .card.modal {
   overflow: hidden;
   position: relative;
+  margin: 20px auto;
 }
 .modalWrapper .card.modal .modal__closeBtn {
   position: absolute;
@@ -132,7 +181,7 @@ table tbody tr:nth-child(odd) {
 .modalWrapper .card.modal > div {
   border-bottom: 1px solid var(--border-color);
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div:not(:first-child) {
     padding: 0 30px;
   }
@@ -141,34 +190,61 @@ table tbody tr:nth-child(odd) {
   padding: 30px 20px;
 }
 .modalWrapper .card.modal > div > div p {
-  margin: 10px 0;
+  font-size: 14px;
   text-align: justify;
+  margin: 10px 0;
 }
-.modalWrapper .card.modal > div > div p b {
-  color: var(--text-dark);
-}
-.modalWrapper .card.modal > div > div > div.modal__header__profileWrapper {
-  width: 100%;
-}
-.modalWrapper .card.modal > div > div > div.modal__header__profileWrapper p {
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: 100px;
-}
-@media (min-width: 720px) {
-  .modalWrapper .card.modal > div > div > div.u-fit {
-    width: unset;
+@media (min-width: 960px) {
+  .modalWrapper .card.modal > div > div p {
+    font-size: initial;
   }
+}
+.modalWrapper .card.modal > div > div p > b {
+  color: var(--text-dark);
 }
 .modalWrapper .card.modal > div > div h3 {
   margin-top: 24px;
   margin-bottom: 8px;
 }
+.modalWrapper .card.modal > div > div.modal__header__section {
+  justify-content: space-between;
+}
+@media (min-width: 960px) {
+  .modalWrapper .card.modal > div > div.modal__header__section {
+    justify-content: space-around;
+  }
+}
+@media (max-width: 959px) {
+  .modalWrapper .card.modal > div > div.modal__header__section:first-child {
+    padding-bottom: 0;
+  }
+  .modalWrapper .card.modal > div > div.modal__header__section:last-child {
+    padding-top: 0;
+  }
+  .modalWrapper .card.modal > div > div.modal__header__section > div:last-child p {
+    text-align: right;
+    margin-left: auto;
+    padding-left: 10px;
+  }
+}
+.modalWrapper .card.modal > div > div.modal__header__section .modal__header__profileWrapper {
+  width: 100%;
+}
+.modalWrapper .card.modal > div > div.modal__header__section .modal__header__profileWrapper p.u-cutText {
+  font-size: 16px;
+  max-width: 150px;
+  font-weight: 600;
+}
+@media (min-width: 960px) {
+  .modalWrapper .card.modal > div > div.modal__header__section .u-fit {
+    width: unset;
+  }
+}
 .modalWrapper .card.modal > div.modal__reviews {
   background-color: #FAFAFA;
   border-bottom: none;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews {
     padding: 30px;
   }
@@ -197,7 +273,7 @@ table tbody tr:nth-child(odd) {
   display: flex;
   flex-direction: column;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls {
     flex-direction: row;
   }
@@ -207,7 +283,7 @@ table tbody tr:nth-child(odd) {
   display: flex;
   width: 100%;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div {
     width: unset;
   }
@@ -218,7 +294,7 @@ table tbody tr:nth-child(odd) {
   width: 50%;
   justify-content: center;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input {
     width: unset;
   }
@@ -245,8 +321,9 @@ table tbody tr:nth-child(odd) {
 }
 .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review {
   position: relative;
+  margin-bottom: 20px;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review {
     display: flex;
     flex-direction: column-reverse;
@@ -256,7 +333,7 @@ table tbody tr:nth-child(odd) {
 .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review p {
   font-size: 12px;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__rating {
     position: absolute;
     top: 0;
@@ -275,7 +352,7 @@ table tbody tr:nth-child(odd) {
   top: 20px;
   right: 20px;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated {
     display: flex;
     height: 100%;
@@ -296,7 +373,7 @@ table tbody tr:nth-child(odd) {
   display: flex;
   justify-content: space-between;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author {
     justify-content: left;
   }
@@ -304,7 +381,7 @@ table tbody tr:nth-child(odd) {
 .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author p {
   margin: 0;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author p:first-child {
     margin-right: 10px;
   }
@@ -315,7 +392,7 @@ table tbody tr:nth-child(odd) {
   color: var(--text-dark);
   margin: 24px 0;
 }
-@media (min-width: 720px) {
+@media (min-width: 960px) {
   .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__content p {
     margin: 12px 0 0 0;
   }
@@ -342,7 +419,21 @@ a {
 }
 
 .text--larger {
-  font-size: 18px;
+  font-size: 16px !important;
+}
+@media (min-width: 960px) {
+  .text--larger {
+    font-size: 18px !important;
+  }
+}
+
+[bp~=container] {
+  max-width: 960px;
+}
+@media (min-width: 1200px) {
+  [bp~=container] {
+    max-width: 1100px;
+  }
 }
 
 nav {
@@ -386,9 +477,14 @@ nav > div .collapse.u-show {
   display: flex;
 }
 nav > div .collapse a {
-  margin: auto 10px;
+  margin: 15px 10px;
 }
-@media (min-width: 960px) {
+@media (min-width: 720px) {
+  nav > div .collapse a {
+    margin: auto 10px;
+  }
+}
+@media (min-width: 720px) {
   nav > div .collapse {
     display: flex;
     flex-direction: row;
@@ -472,6 +568,7 @@ body {
   margin-right: 20px;
   min-width: 176px;
   text-align: center;
+  cursor: pointer;
 }
 #hotValidators .cardWrapper .card:first-child {
   margin-left: 20px;
@@ -520,7 +617,25 @@ body {
 #topValidators .topValidators__header {
   align-items: center;
   justify-content: space-between;
-  padding: 16px 28px;
+  padding: 16px 22px;
+}
+@media (min-width: 960px) {
+  #topValidators .topValidators__header {
+    padding: 16px 28px;
+  }
+}
+#topValidators .topValidators__header > div {
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+@media (min-width: 650px) {
+  #topValidators .topValidators__header > div {
+    width: unset;
+  }
+  #topValidators .topValidators__header > div label {
+    margin-right: 20px;
+  }
 }
 @media (min-width: 960px) {
   #topValidators {
@@ -534,7 +649,8 @@ body {
 #settings h2 {
   margin-bottom: 40px;
 }
-#settings textarea {
+#settings .label--large {
+  display: block;
   margin-bottom: 20px;
 }
 #settings .settings__bottom {
@@ -549,6 +665,15 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+@media (min-width: 960px) {
+  .u-cutText {
+    max-width: 250px;
+  }
+}
+
+.u-noWrap {
+  flex-wrap: nowrap;
 }
 
 /*# sourceMappingURL=style.css.map */

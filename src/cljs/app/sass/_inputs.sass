@@ -16,7 +16,7 @@ textarea
   line-height: 1
   padding: 15px
 
-input:focus, textarea:focus
+input:not(.input--active):not([type="checkbox"]):focus, textarea:focus
   border-width: 1.5px
   border-color: var(--primary-color)
   margin: 4.5px -0.5px
@@ -42,3 +42,50 @@ input[type="submit"], button
   font-weight: 600
   color: var(--text-dark)
   margin-top: 20px
+
+.switch 
+  position: relative
+  padding-right: 20px
+  font-size: 14px
+  line-height: 2
+
+.switch input 
+  opacity: 0
+  width: 0
+  height: 0
+  border: none
+  margin: 0
+
+.slider 
+  position: absolute
+  width: 42px
+  height: 23px
+  cursor: pointer
+  top: 0
+  right: 0
+  bottom: 0
+  margin: auto
+  background-color: #ccc
+  border-radius: 15px
+  -webkit-transition: .4s
+  transition: .4s
+
+.slider:before 
+  position: absolute
+  content: ""
+  height: 18px
+  width: 18px
+  left: 3px
+  bottom: 3px
+  background-color: white
+  border-radius: 50%
+  -webkit-transition: .4s
+  transition: .4s
+
+input:checked + .slider 
+  background-color: var(--primary-color)
+
+input:checked + .slider:before 
+  -webkit-transform: translateX(17px)
+  -ms-transform: translateX(17px)
+  transform: translateX(17px)

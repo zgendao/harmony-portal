@@ -4,15 +4,22 @@
   top: 0
   left: 0
   width: 100%
-  height: 100%
-  overflow: auto
-  display: none
-  padding: 20px
+  padding: 0 20px
   z-index: 2
+  overflow: hidden
+  height: 0
+  opacity: 0
+  transition: height 0ms 200ms, opacity 200ms 0ms
+  &.u-show
+    opacity: 1
+    height: 100%
+    overflow: auto
+    transition: height 0ms 0ms, opacity 200ms 0ms
 
   .card.modal
     overflow: hidden
     position: relative
+    margin: 20px auto
     
     .modal__closeBtn
       position: absolute
@@ -28,43 +35,58 @@
     > div
       border-bottom: 1px solid var(--border-color)
       &:not(:first-child)
-        @media (min-width: 720px)
+        @media (min-width: 960px)
           padding: 0 30px
 
       > div
         padding: 30px 20px
 
         p
-          margin: 10px 0
+          font-size: 14px
           text-align: justify
+          margin: 10px 0
+          @media (min-width: 960px)
+            font-size: initial
 
-          b
+          > b
             color: var(--text-dark)
-
-        > div
-          //width: 50%
-
-          &.modal__header__profileWrapper
-            width: 100%
-
-            p
-              overflow: hidden
-              white-space: nowrap
-              max-width: 100px
-          
-          &.u-fit
-            @media (min-width: 720px)
-              width: unset
-          
 
         h3
           margin-top: 24px
           margin-bottom: 8px
+
+        &.modal__header__section
+          justify-content: space-between
+          @media (min-width: 960px)
+            justify-content: space-around
+
+          @media (max-width: 959px)
+            &:first-child
+              padding-bottom: 0
+            &:last-child
+              padding-top: 0
+          
+            > div:last-child p
+              text-align: right
+              margin-left: auto
+              padding-left: 10px
+
+          .modal__header__profileWrapper
+            width: 100%
+
+            p.u-cutText
+              font-size: 16px
+              max-width: 150px
+              font-weight: 600
+          
+          .u-fit
+            @media (min-width: 960px)
+              width: unset
     
       &.modal__reviews
         background-color: #FAFAFA
         border-bottom: none
-        @media (min-width: 720px)
+        @media (min-width: 960px)
           padding: 30px
 
         .modal__reviews__header
@@ -89,14 +111,14 @@
           padding: 0 10px
           display: flex
           flex-direction: column
-          @media (min-width: 720px)
+          @media (min-width: 960px)
             flex-direction: row
 
           > div
             padding: 0 10px
             display: flex
             width: 100%
-            @media (min-width: 720px)
+            @media (min-width: 960px)
               width: unset
 
             button, input
@@ -104,7 +126,7 @@
               align-items: center
               width: 50%
               justify-content: center
-              @media (min-width: 720px)
+              @media (min-width: 960px)
                 width: unset
 
               img
@@ -128,7 +150,8 @@
 
           .review
             position: relative
-            @media (min-width: 720px)
+            margin-bottom: 20px
+            @media (min-width: 960px)
               display: flex
               flex-direction: column-reverse
               padding: 25px 170px 25px 90px
@@ -137,7 +160,7 @@
               font-size: 12px
 
             .review__rating
-              @media (min-width: 720px)
+              @media (min-width: 960px)
                 position: absolute
                 top: 0
                 left: 30px
@@ -153,7 +176,7 @@
               position: absolute
               top: 20px
               right: 20px
-              @media (min-width: 720px)
+              @media (min-width: 960px)
                 display: flex
                 height: 100%
                 top: 0
@@ -170,12 +193,12 @@
             .review__author
               display: flex
               justify-content: space-between
-              @media (min-width: 720px)
+              @media (min-width: 960px)
                 justify-content: left
               
               p
                 margin: 0
-                @media (min-width: 720px)
+                @media (min-width: 960px)
                   &:first-child
                     margin-right: 10px
             
@@ -184,5 +207,5 @@
               font-weight: 600
               color: var(--text-dark)
               margin: 24px 0
-              @media (min-width: 720px)
+              @media (min-width: 960px)
                 margin: 12px 0 0 0

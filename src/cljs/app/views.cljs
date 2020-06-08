@@ -9,7 +9,7 @@
 
 (def state (atom {:navbar-open false
                   :modal nil
-                  :settings false}))
+                  :settings nil}))
 (def review (atom ""))
 (def recommend (atom true))
 
@@ -29,9 +29,9 @@
     (swap! state assoc :modal id)
     (set! (.. js/document -body -style -overflow) "hidden")))
 
-(defn close-modal []
+(defn close-modal [modal]
   (do
-    (swap! state assoc :modal nil)
+    (swap! state assoc modal nil)
     (set! (.. js/document -body -style -overflow) "auto")
     (reset! review "")
     (reset! recommend true)))
@@ -49,6 +49,7 @@
 
 (defn navbar []
   [:nav
+   ;[:p (str @app-state)]
    ;(reset! app-state {:reviews {}})
    [:div {:bp "container flex"}
     [:div.navbar__brand
@@ -65,10 +66,11 @@
      [:span.navbar__togglr__bars]]]])
 
 (defn settings []
-  [:div.modalWrapper {:style {:display (if (@state :settings) "block" "none")}}
-   [:div#settings.card.modal {:bp "container"}
+  [:div.modalWrapper {:class (when (@state :settings) "u-show")
+                      :on-click #(close-modal :settings)}
+   [:div#settings.card.modal {:bp "container" :on-click (fn [e] (.stopPropagation e))}
     [:h2.title "Settings"]
-    [:button.modal__closeBtn {:on-click #(swap! state assoc :settings false)} "X"]
+    [:button.modal__closeBtn {:on-click #(close-modal :settings)} "X"]
     [:label.label--large "Description"
      [:textarea {:rows "3" :placeholder "Write an answer"}]]
     [:label.label--large "Who are you?"
@@ -78,22 +80,22 @@
     [:div.settings__bottom
      [:input {:type "submit" :value "Save Changes"}]]]])
 
-(defn modal [id]
-  (let [seq-map (into (hash-map) (map-indexed (fn [i value] [i value]) @data))
-        validator (seq-map id)
-        reviews (get-in @app-state [:reviews (keyword (:address validator))])
+(defn modal [address]
+  (let [;seq-map (into (hash-map) (map-indexed (fn [i value] [i value]) @data))
+        validator (get @data address)
+        reviews (get-in @app-state [:reviews address])
         rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 reviews)
         warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 reviews)]
-    [:div.modalWrapper {:style {:display (if (@state :modal) "block" "none")}
-                        :on-click #(close-modal)}
+    [:div.modalWrapper {:class (when (@state :modal) "u-show")
+                        :on-click #(close-modal :modal)}
                         ;:on-click #(set! (.-display (.-style (second (.getElementsByClassName js/document "modalWrapper")))) "none")}
      [:div.card.modal {:bp "padding--none container" :on-click (fn [e] (.stopPropagation e))}
       [:div {:bp "grid gap-none"}
-       [:div {:bp "12 6@md flex" :style {:border-right "1px solid var(--border-color)"}}
+       [:div.modal__header__section {:bp "12 6@lg flex" :style {:border-right "1px solid var(--border-color)"}}
         [:div.modal__header__profileWrapper.u-fit {:bp "flex padding--lg text-center"}
          [:div {:style {:margin "auto"}}
           [:img {:src "./images/logo1.png" :width "25px" :height "25px"}]
-          [:p {:title (:name validator)} (:name validator)]]]
+          [:p.u-cutText {:title (:name validator)} (:name validator)]]]
         [:div {:bp "fill"}
          [:p "Total staked:"]
          [:p "Delegated:"]
@@ -104,15 +106,16 @@
          [:p [:b (vformat (:total-delegation validator))]]
          [:p [:b (vformat (:self-stake validator))]]
          [:p [:b (vformat (:max-delegation validator))]]]]
-       [:div {:bp "12 6@md flex" :style {:justify-content "space-around"}}
+       [:div.modal__header__section.u-noWrap {:bp "12 6@lg flex"}
         [:div.u-fit
          [:p "Address:"]
          [:p "Website:"]
          [:p "Fee:"]
          [:p "Uptime:"]]
-        [:div
-         [:p.u-cutText {:title (:address validator)} [:b {:style {:color "var(--primary-color)"}} (:address validator)]]
-         [:a {:href (:website validator) :target "_BLANK"} [:b (:website validator)]]
+        [:div.u-cutText {:style {:max-width "unset"}}
+         [:p.u-cutText {:title address} [:b {:style {:color "var(--primary-color)"}} address]]
+         [:p {:title (:website validator)}
+          [:a {:href (:website validator) :target "_BLANK"} [:b (:website validator)]]]
          [:p [:b (pformat (:fee validator))]]
          [:p [:b (pformat (:uptime validator))]]]]]
       [:div {:bp "grid gap-none"}
@@ -134,7 +137,7 @@
         [:img {:src "/images/warning_icon.svg"}]
         [:span (if warn warn 0)]
         [:h3 (str (+ rec warn) " REVIEWS")]]
-       (when-not (already-rated (:address validator))
+       (when-not (already-rated address)
          [:div.modal__reviews__controls
           [:div
            [:button {:class (when @recommend "input--active") :type "button" :on-click #(reset! recommend true)}
@@ -151,9 +154,9 @@
            [:input {:class "input--active"
                     :type "submit"
                     :value "Send"
-                    :on-click #(rate (:address validator) @recommend @review)}]]])
+                    :on-click #(rate address @recommend @review)}]]])
        [:div.modal__reviews__reviews
-        (for [[k v] (get-in @app-state [:reviews (keyword (:address validator))])]
+        (for [[k v] (get-in @app-state [:reviews address])]
           ^{:key k}
           [:div.card.review
            [:div.review__rating
@@ -167,10 +170,15 @@
            [:div.review__author
             [:p "oneq3xye3"]
             (let [d (js/Date. k)]
-              [:p (str (.getFullYear d) "." (.slice (+ "0" (inc (.getMonth d))) (- 2)) "." (.slice (+ "0" (.getDate d)) (- 2)))])]])]]
-      [:button.modal__closeBtn {:on-click #(close-modal)} "X"]]]))
+              [:p (str (.getFullYear d) "." (.slice (str "0" (inc (.getMonth d))) (- 2)) "." (.slice (str "0" (.getDate d)) (- 2)))])]])]]
+      [:button.modal__closeBtn {:on-click #(close-modal :modal)} "X"]]]))
 
 (def search (atom ""))
+(def active (atom true))
+(def column-sort (atom {:column "return" :inc true}))
+(defn switch-sort [column]
+  (swap! column-sort assoc :column column :inc (if (= (:column @column-sort) column) (not (:inc @column-sort)) true)))
+
 (defn main []
   [:main
    [settings]
@@ -179,42 +187,58 @@
     [:div#hotValidators
      [:h2.title "Hot Validators"]
      [:div.cardWrapper
-      (for [validator (take-last 5 (into [] (filter #(%1 :active) @data)))]
+      (for [[address validator] (take-last 5 (filter (fn [[k v]] (if (:active v) k)) @data))]
         ^{:key (:id validator)}
-        [:div.card {:on-click #(open-modal (.indexOf @data validator))}
+        [:div.card {:on-click #(open-modal address)}
          [:img {:src "./images/logo1.png" :width "25px" :height "25px"}]
-         [:h4 (:name validator)]
-         [:p (str "Fee:" (pformat (:fee validator))) [:br] (str "Return:" (pformat (:return validator)))]])]]
+         [:h4.u-cutText {:title (:name validator)} (:name validator)]
+         [:p (str "Fee: " (pformat (:fee validator))) [:br] (str "Return: " (pformat (:return validator)))]])]]
     [:div#topValidators.card {:bp "padding--none"}
      [:div.topValidators__header {:bp "flex"}
       [:h2.title "Top validators"
        [:span (count @data)]]
-      [:input.u-rounded {:type "search"
-                         :placeholder "Search"
-                         :value @search
-                         :on-change #(debounce (reset! search (-> % .-target .-value)) 5000)}]]
+      [:div {:bp "flex"}
+       [:label.switch "Active"
+        [:input {:type "checkbox" :checked @active :on-click #(reset! active (not @active))}]
+        [:span.slider]]
+       [:input.u-rounded {:type "search"
+                          :placeholder "Search"
+                          :value @search
+                          :on-change #(debounce (reset! search (-> % .-target .-value)) 5000)}]]]
      [:div {:style {:overflow-x "auto"}}
       [:table
        [:thead
         [:tr
-         [:th {:colSpan 2} "Rate"]
-         [:th.table__nameRow "Name"]
-         [:th "Expected return"]
-         [:th "Stake"]
-         [:th "Fees"]
-         [:th "Uptime"]]]
+         [:th {:colSpan 2 :on-click #(switch-sort "rec")} "Rate"]
+         [:th.table__nameRow {:on-click #(switch-sort "name")} "Name"]
+         [:th {:on-click #(switch-sort "return")} "Expected return"]
+         [:th {:on-click #(switch-sort "total-stake")} "Stake"]
+         [:th {:on-click #(switch-sort "fee")} "Fees"]
+         [:th {:on-click #(switch-sort "uptime")} "Uptime"]]]
        [:tbody
-        (doall
-         (for [validator @data]
-           (let [reviews (get-in @app-state [:reviews (keyword (:address validator))])
-                 rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 reviews)
-                 warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 reviews)]
-             (when (includes? (lower-case (:name validator)) (lower-case @search))
-               ^{:key (:id validator)}
-               [:tr {:on-click #(open-modal (:id validator))}
-                [:td [:img {:src "/images/recommend_icon.svg"}] (if rec rec 0)]
-                [:td [:img {:src "/images/warning_icon.svg"}] (if warn warn 0)]
-                [:td.table__nameRow {:title (:name validator)} (:name validator)]
+        (let [merged-data (into {} (map (fn [[k v]]
+                                          {k {:active (get-in @data [k :active])
+                                              :name (get-in @data [k :name])
+                                              :return (get-in @data [k :return])
+                                              :total-stake (get-in @data [k :total-stake])
+                                              :fee (get-in @data [k :fee])
+                                              :uptime (get-in @data [k :uptime])
+                                              :rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 v)
+                                              :warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 v)}})
+                                          ; (assoc-in @data [k :rate]
+                                          ;           {:rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 v)
+                                          ;            :warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 v)}))
+                                        (:reviews @app-state)))]
+          (doall
+           (for [[address validator] (sort-by (comp (keyword (:column @column-sort)) second) #(if (:inc @column-sort) (compare %2 %1) (compare %1 %2)) merged-data)]
+             (when (and
+                    (includes? (lower-case (:name validator)) (lower-case @search))
+                    (if @active (:active validator) true))
+               ^{:key address}
+               [:tr {:on-click #(open-modal address)}
+                [:td [:img {:src "/images/recommend_icon.svg"}] (:rec validator)]
+                [:td [:img {:src "/images/warning_icon.svg"}] (:warn validator)]
+                [:td.u-cutText {:title (:name validator)} (:name validator)]
                 [:td (pformat (:return validator))]
                 [:td (vformat (:total-stake validator))]
                 [:td (pformat (:fee validator))]
