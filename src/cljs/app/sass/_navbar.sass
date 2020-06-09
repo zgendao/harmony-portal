@@ -1,0 +1,67 @@
+nav
+  background-color: white
+  box-shadow: 0 1px 0 0 var(--border-color)
+
+  > div
+    justify-content: space-between
+    padding: 16px
+    @media (min-width: 960px)
+      padding: 16px 0
+
+    .navbar__brand
+      a
+        height: 100%
+
+        img 
+          margin: auto 0
+          margin-right: 10px
+        p
+          color: var(--text-md)
+          font-weight: 600
+          font-size: 18px
+          margin: auto 0
+          @media (min-width: 960px)
+            font-size: 22px
+
+    .collapse
+      display: none
+      flex-direction: column
+      width: 100%
+      margin-top: 20px
+
+      > div
+        display: none
+        flex-direction: column
+        @media (min-width: 720px)
+          flex-direction: row
+
+        a
+          margin: 15px 10px
+          @media (min-width: 720px)
+            margin: auto 10px
+
+      @media (min-width: 720px)
+        display: flex
+        flex-direction: row
+        width: auto
+        margin: 0
+    
+    .navbar__togglr
+      position: absolute
+      right: 15px
+      top: 15px
+      background: none
+      border: none
+      outline: none
+
+      .navbar__togglr__bars
+        width: 16px
+        height: 2px
+        background-color: #555B68
+        display: block
+        border-radius: 10px
+        transition: all 0.2s
+        margin-top: 3px
+  
+  .u-show
+    display: flex !important

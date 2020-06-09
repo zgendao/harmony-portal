@@ -3,7 +3,7 @@
    [reagent.core :as r]
    [app.views :refer [portal]]
    [app.storage :refer [app-state]]
-   [app.request :refer [request fetch-validators get-accounts]]
+   [app.request :refer [get-validators fetch-validators get-accounts]]
    [bide.core :as b]))
 
 (enable-console-print!)
@@ -19,7 +19,8 @@
 (defn transform-map [rmap]
   (into []
         (for [[r u] rmap]
-          [u r])))
+          [u r]))) ""
+active-filte
 
 (defn make-bide-router [rmap]
   (b/router (transform-map rmap)))
@@ -54,8 +55,8 @@
   (b/start! router {:default :app.home
                     :html5? true
                     :on-navigate (fn [name params query] (on-navigate name params query app-state))})
-  (request)
-  (get-accounts))
-  ;(fetch-validators))
+  (get-validators)
+  (get-accounts)
+  (fetch-validators))
 
 (run app-state)

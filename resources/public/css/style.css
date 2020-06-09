@@ -1,5 +1,88 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;900&display=swap");
 @import url("/css/blueprint.min.css");
+nav {
+  background-color: white;
+  box-shadow: 0 1px 0 0 var(--border-color);
+}
+nav > div {
+  justify-content: space-between;
+  padding: 16px;
+}
+@media (min-width: 960px) {
+  nav > div {
+    padding: 16px 0;
+  }
+}
+nav > div .navbar__brand a {
+  height: 100%;
+}
+nav > div .navbar__brand a img {
+  margin: auto 0;
+  margin-right: 10px;
+}
+nav > div .navbar__brand a p {
+  color: var(--text-md);
+  font-weight: 600;
+  font-size: 18px;
+  margin: auto 0;
+}
+@media (min-width: 960px) {
+  nav > div .navbar__brand a p {
+    font-size: 22px;
+  }
+}
+nav > div .collapse {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 20px;
+}
+nav > div .collapse > div {
+  display: none;
+  flex-direction: column;
+}
+@media (min-width: 720px) {
+  nav > div .collapse > div {
+    flex-direction: row;
+  }
+}
+nav > div .collapse > div a {
+  margin: 15px 10px;
+}
+@media (min-width: 720px) {
+  nav > div .collapse > div a {
+    margin: auto 10px;
+  }
+}
+@media (min-width: 720px) {
+  nav > div .collapse {
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    margin: 0;
+  }
+}
+nav > div .navbar__togglr {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background: none;
+  border: none;
+  outline: none;
+}
+nav > div .navbar__togglr .navbar__togglr__bars {
+  width: 16px;
+  height: 2px;
+  background-color: #555B68;
+  display: block;
+  border-radius: 10px;
+  transition: all 0.2s;
+  margin-top: 3px;
+}
+nav .u-show {
+  display: flex !important;
+}
+
 input, textarea, button {
   line-height: 2.8;
   font-size: 16px;
@@ -48,7 +131,6 @@ input[type=submit].input--active, button.input--active {
 .label--large {
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-dark);
   margin-top: 20px;
 }
 
@@ -165,7 +247,7 @@ table tbody tr:nth-child(odd) {
 .modalWrapper .card.modal {
   overflow: hidden;
   position: relative;
-  margin: 20px auto;
+  margin: 30px auto;
 }
 .modalWrapper .card.modal .modal__closeBtn {
   position: absolute;
@@ -178,163 +260,202 @@ table tbody tr:nth-child(odd) {
   border: none;
   cursor: pointer;
 }
-.modalWrapper .card.modal > div {
+
+#loginPanel {
+  max-width: 500px;
+  margin-top: 100px;
+}
+@media (min-width: 960px) {
+  #loginPanel {
+    padding: 20px 60px 30px 60px;
+  }
+}
+#loginPanel h2 {
+  text-transform: none;
+}
+#loginPanel p {
+  color: var(--text-md);
+  margin-bottom: 50px;
+}
+#loginPanel .card {
+  text-align: left;
+  margin: 15px 0;
+  padding: 20px 30px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+#loginPanel .card:hover {
+  background-color: #f5f5f5;
+}
+#loginPanel .card h3 {
+  margin: 0;
+  font-weight: 600;
+}
+#loginPanel .card p {
+  color: var(--primary-color);
+  margin: 0;
+}
+#loginPanel input {
+  border-radius: 50px;
+  line-height: 2.5;
+  padding: 0 30px;
+  margin-bottom: 20px;
+}
+
+#validator > div {
   border-bottom: 1px solid var(--border-color);
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div:not(:first-child) {
+  #validator > div:not(:first-child) {
     padding: 0 30px;
   }
 }
-.modalWrapper .card.modal > div > div {
+#validator > div > div {
   padding: 30px 20px;
 }
-.modalWrapper .card.modal > div > div p {
+#validator > div > div p {
   font-size: 14px;
   text-align: justify;
   margin: 10px 0;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div > div p {
+  #validator > div > div p {
     font-size: initial;
   }
 }
-.modalWrapper .card.modal > div > div p > b {
-  color: var(--text-dark);
-}
-.modalWrapper .card.modal > div > div h3 {
+#validator > div > div h3 {
   margin-top: 24px;
   margin-bottom: 8px;
 }
-.modalWrapper .card.modal > div > div.modal__header__section {
+#validator > div > div.validator__header__section {
   justify-content: space-between;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div > div.modal__header__section {
+  #validator > div > div.validator__header__section {
     justify-content: space-around;
   }
 }
 @media (max-width: 959px) {
-  .modalWrapper .card.modal > div > div.modal__header__section:first-child {
+  #validator > div > div.validator__header__section:first-child {
     padding-bottom: 0;
   }
-  .modalWrapper .card.modal > div > div.modal__header__section:last-child {
+  #validator > div > div.validator__header__section:last-child {
     padding-top: 0;
   }
-  .modalWrapper .card.modal > div > div.modal__header__section > div:last-child p {
+  #validator > div > div.validator__header__section > div:last-child p {
     text-align: right;
     margin-left: auto;
     padding-left: 10px;
   }
 }
-.modalWrapper .card.modal > div > div.modal__header__section .modal__header__profileWrapper {
+#validator > div > div.validator__header__section .validator__header__profileWrapper {
   width: 100%;
 }
-.modalWrapper .card.modal > div > div.modal__header__section .modal__header__profileWrapper p.u-cutText {
+#validator > div > div.validator__header__section .validator__header__profileWrapper p.u-cutText {
   font-size: 16px;
   max-width: 150px;
   font-weight: 600;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div > div.modal__header__section .u-fit {
+  #validator > div > div.validator__header__section .u-fit {
     width: unset;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews {
+#validator > div.validator__reviews {
   background-color: #FAFAFA;
   border-bottom: none;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews {
+  #validator > div.validator__reviews {
     padding: 30px;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header {
+#validator > div.validator__reviews .validator__reviews__header {
   display: flex;
   align-items: center;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header img {
+#validator > div.validator__reviews .validator__reviews__header img {
   width: 30px;
   height: 30px;
   margin: 0 8px;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header img:last-of-type {
+#validator > div.validator__reviews .validator__reviews__header img:last-of-type {
   margin-left: 16px;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header span {
+#validator > div.validator__reviews .validator__reviews__header span {
   font-weight: 600;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__header h3 {
+#validator > div.validator__reviews .validator__reviews__header h3 {
   margin: 0 20px;
   color: var(--text-md);
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls {
+#validator > div.validator__reviews .validator__reviews__controls {
   padding: 0 10px;
   display: flex;
   flex-direction: column;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls {
+  #validator > div.validator__reviews .validator__reviews__controls {
     flex-direction: row;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div {
+#validator > div.validator__reviews .validator__reviews__controls > div {
   padding: 0 10px;
   display: flex;
   width: 100%;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div {
+  #validator > div.validator__reviews .validator__reviews__controls > div {
     width: unset;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input {
+#validator > div.validator__reviews .validator__reviews__controls > div button, #validator > div.validator__reviews .validator__reviews__controls > div input {
   display: flex;
   align-items: center;
   width: 50%;
   justify-content: center;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input {
+  #validator > div.validator__reviews .validator__reviews__controls > div button, #validator > div.validator__reviews .validator__reviews__controls > div input {
     width: unset;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button img, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input img {
+#validator > div.validator__reviews .validator__reviews__controls > div button img, #validator > div.validator__reviews .validator__reviews__controls > div input img {
   margin-right: 10px;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button img:first-of-type, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input img:first-of-type {
+#validator > div.validator__reviews .validator__reviews__controls > div button img:first-of-type, #validator > div.validator__reviews .validator__reviews__controls > div input img:first-of-type {
   background-color: white;
   border-radius: 30px;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button:first-child, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input:first-child {
+#validator > div.validator__reviews .validator__reviews__controls > div button:first-child, #validator > div.validator__reviews .validator__reviews__controls > div input:first-child {
   border-right: none;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button:last-child, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input:last-child {
+#validator > div.validator__reviews .validator__reviews__controls > div button:last-child, #validator > div.validator__reviews .validator__reviews__controls > div input:last-child {
   border-left: none;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div button[type=text], .modalWrapper .card.modal > div.modal__reviews .modal__reviews__controls > div input[type=text] {
+#validator > div.validator__reviews .validator__reviews__controls > div button[type=text], #validator > div.validator__reviews .validator__reviews__controls > div input[type=text] {
   width: 100%;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review {
+#validator > div.validator__reviews .validator__reviews__reviews .review {
   position: relative;
   margin-bottom: 20px;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review {
+  #validator > div.validator__reviews .validator__reviews__reviews .review {
     display: flex;
     flex-direction: column-reverse;
     padding: 25px 170px 25px 90px;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review p {
+#validator > div.validator__reviews .validator__reviews__reviews .review p {
   font-size: 12px;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__rating {
+  #validator > div.validator__reviews .validator__reviews__reviews .review .review__rating {
     position: absolute;
     top: 0;
     left: 30px;
@@ -342,18 +463,18 @@ table tbody tr:nth-child(odd) {
     height: 100%;
     align-items: center;
   }
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__rating img {
+  #validator > div.validator__reviews .validator__reviews__reviews .review .review__rating img {
     width: 30px;
     height: 30px;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated {
+#validator > div.validator__reviews .validator__reviews__reviews .review .review__delegated {
   position: absolute;
   top: 20px;
   right: 20px;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated {
+  #validator > div.validator__reviews .validator__reviews__reviews .review .review__delegated {
     display: flex;
     height: 100%;
     top: 0;
@@ -361,39 +482,38 @@ table tbody tr:nth-child(odd) {
     align-items: center;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated p, .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated strong {
+#validator > div.validator__reviews .validator__reviews__reviews .review .review__delegated p, #validator > div.validator__reviews .validator__reviews__reviews .review .review__delegated strong {
   margin: 0;
   text-align: right;
   width: 100%;
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__delegated strong {
+#validator > div.validator__reviews .validator__reviews__reviews .review .review__delegated strong {
   color: var(--primary-color);
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author {
+#validator > div.validator__reviews .validator__reviews__reviews .review .review__author {
   display: flex;
   justify-content: space-between;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author {
+  #validator > div.validator__reviews .validator__reviews__reviews .review .review__author {
     justify-content: left;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author p {
+#validator > div.validator__reviews .validator__reviews__reviews .review .review__author p {
   margin: 0;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__author p:first-child {
+  #validator > div.validator__reviews .validator__reviews__reviews .review .review__author p:first-child {
     margin-right: 10px;
   }
 }
-.modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__content p {
+#validator > div.validator__reviews .validator__reviews__reviews .review .review__content p {
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-dark);
   margin: 24px 0;
 }
 @media (min-width: 960px) {
-  .modalWrapper .card.modal > div.modal__reviews .modal__reviews__reviews .review .review__content p {
+  #validator > div.validator__reviews .validator__reviews__reviews .review .review__content p {
     margin: 12px 0 0 0;
   }
 }
@@ -411,6 +531,10 @@ table tbody tr:nth-child(odd) {
 
 *, *:before, *:after {
   box-sizing: border-box;
+}
+
+body {
+  color: var(--text-dark);
 }
 
 a {
@@ -436,80 +560,6 @@ a {
   }
 }
 
-nav {
-  background-color: white;
-  box-shadow: 0 1px 0 0 var(--border-color);
-}
-nav > div {
-  justify-content: space-between;
-  padding: 16px;
-}
-@media (min-width: 960px) {
-  nav > div {
-    padding: 16px 0;
-  }
-}
-nav > div .navbar__brand a {
-  height: 100%;
-}
-nav > div .navbar__brand a img {
-  margin: auto 0;
-  margin-right: 10px;
-}
-nav > div .navbar__brand a p {
-  color: var(--text-md);
-  font-weight: 600;
-  font-size: 18px;
-  margin: auto 0;
-}
-@media (min-width: 960px) {
-  nav > div .navbar__brand a p {
-    font-size: 22px;
-  }
-}
-nav > div .collapse {
-  display: none;
-  flex-direction: column;
-  width: 100%;
-  margin-top: 20px;
-}
-nav > div .collapse.u-show {
-  display: flex;
-}
-nav > div .collapse a {
-  margin: 15px 10px;
-}
-@media (min-width: 720px) {
-  nav > div .collapse a {
-    margin: auto 10px;
-  }
-}
-@media (min-width: 720px) {
-  nav > div .collapse {
-    display: flex;
-    flex-direction: row;
-    width: auto;
-    margin: 0;
-  }
-}
-nav > div .navbar__togglr {
-  position: absolute;
-  right: 15px;
-  top: 15px;
-  background: none;
-  border: none;
-  outline: none;
-}
-nav > div .navbar__togglr .navbar__togglr__bars {
-  width: 16px;
-  height: 2px;
-  background-color: #555B68;
-  display: block;
-  border-radius: 10px;
-  transition: all 0.2s;
-  margin-top: 3px;
-}
-
 body {
   margin: 0;
   background-color: var(--background-color);
@@ -521,16 +571,6 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 20px;
-}
-.card h4 {
-  color: var(--text-md);
-  text-align: left;
-  margin: 14px 0;
-}
-.card p {
-  color: var(--text-light);
-  text-align: left;
-  margin: 0;
 }
 
 .title {
@@ -572,6 +612,16 @@ body {
 }
 #hotValidators .cardWrapper .card:first-child {
   margin-left: 20px;
+}
+#hotValidators .cardWrapper .card h4 {
+  color: var(--text-md);
+  text-align: left;
+  margin: 14px 0;
+}
+#hotValidators .cardWrapper .card p {
+  color: var(--text-light);
+  text-align: left;
+  margin: 0;
 }
 #hotValidators .cardWrapper::after {
   content: "";

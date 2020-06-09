@@ -8,4 +8,4 @@
 ;                   :modal nil
 ;                   :settings false}))
 (def local (local-storage (atom {}) :local))
-(def app-state (init {:apikey "test1"}))
+(def app-state (init {:apikey "test2"}))
