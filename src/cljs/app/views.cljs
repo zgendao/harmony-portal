@@ -47,7 +47,7 @@
 
 (defn rate [address recommend review]
   (swap! local assoc-in [:reviews (keyword address)] {:recommend recommend :review review})
-  (swap! app-state assoc-in [:reviews (keyword address) (.getTime (js/Date.))] {:recommend recommend :review review}))
+  (swap! app-state assoc-in [(keyword address) :reviews (.getTime (js/Date.))] {:account (:account @local) :recommend recommend :review review}))
 
 (defn loading []
   [:p "loading.."])
@@ -62,10 +62,10 @@
       [:img {:src "./images/logo1.png" :width "25px" :height "25px"}]
       [:p "Harmony Validator Community"]]]
     [:div.collapse {:bp "flex" :class [(when (@state :navbar-open) "u-show")]}
-     [:div {:class [(when (get-in @local [:own-validator :address]) "u-show")]}
+     [:div {:class [(when (:account @local) "u-show")]}
       [:a {:href "#" :on-click #(open-modal :settingsPanel true)} "Settings"]
-      [:a {:href (str (:account @local))} "Address"]]
-     [:div {:class [(when-not (get-in @local [:own-validator :address])) "u-show"]}
+      [:a {:href (:account @local)} "Address"]]
+     [:div {:class [(when-not (:account @local)) "u-show"]}
       [:a {:href "#" :on-click #(open-modal :loginPanel true)} "Login"]]]
     [:button.navbar__togglr {:bp "hide@md"
                              :on-click #(swap! state assoc :navbar-open (not (@state :navbar-open)))}
@@ -84,9 +84,9 @@
      [:p "one1d6vmmq6...maxy330d"]]]])
 
 (defn settingsPanel []
-  (let [description (atom (get-in @local [:own-validator :description]))
-        whoareyou (atom (get-in @local [:own-validator :whoareyou]))
-        projects (atom (get-in @local [:own-validator :projects]))]
+  (let [description (atom (get-in @app-state [(keyword (:account @local)) :description]))
+        whoareyou (atom (get-in @app-state [(keyword (:account @local)) :whoareyou]))
+        projects (atom (get-in @app-state [(keyword (:account @local)) :projects]))]
     (fn []
       [:div.modalWrapper {:class (when (@state :settingsPanel) "u-show")
                           :on-click #(close-modal :settingsPanel)}
@@ -111,18 +111,21 @@
         [:div.settings__bottom
          [:input {:type "submit"
                   :value "Save Changes"
-                  :on-click #(do (swap! local assoc-in [:own-validator :description] @description)
-                                 (swap! local assoc-in [:own-validator :whoareyou] @whoareyou)
-                                 (swap! local assoc-in [:own-validator :projects] @projects))}]]]])))
+                  :on-click #(do (swap! app-state assoc-in [(keyword (:account @local)) :description] @description)
+                                 (swap! app-state assoc-in [(keyword (:account @local)) :whoareyou] @whoareyou)
+                                 (swap! app-state assoc-in [(keyword (:account @local)) :projects] @projects))}]]]])))
 
 (defn validatorPanel []
   (let [address (:validatorPanel @state)
         validator (get @data address)
-        reviews (get-in @app-state [:reviews address])
+        reviews (get-in @app-state [address :reviews])
         rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 reviews)
         warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 reviews)
         image (str "https://raw.githubusercontent.com/harmony-one/validator-logos/master/validators/" (name (or address "")) ".jpg")
-        generated (str "https://avatars.dicebear.com/api/jdenticon/" (name (or address "")) ".svg")]
+        generated (str "https://avatars.dicebear.com/api/jdenticon/" (name (or address "")) ".svg")
+        sett-desc (get-in @app-state [address :description])
+        sett-who (get-in @app-state [address :whoareyou])
+        sett-proj (get-in @app-state [address :projects])]
     [:div.modalWrapper {:class (when (@state :validatorPanel) "u-show")
                         :on-click #(close-modal :validatorPanel)}
      [:div#validator.card.modal {:bp "padding--none container" :on-click (fn [e] (.stopPropagation e))}
@@ -156,15 +159,16 @@
          [:p [:b (pformat (:uptime validator))]]]]]
       [:div {:bp "grid gap-none"}
        [:div {:bp "12 8@md"}
-        [:p.text--larger (:description validator)]
-        [:h3 "Who are you?"]
-        [:p "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Enim volutpat,
-                 vivamus ac et orci eros sagittis arcu amet. Eu viverra in pellentesque
-                 pretium sagittis lacus."]
-        [:h3 "Are you staking in another projects?"]
-        [:p "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sit urna iaculis
-                 fames elementum tempor aliquam, pretium. Consequat dolor, ac pulvinar praesent
-                 lectus ipsum consectetur tellus."]]
+        (when-not (or (nil? sett-desc) (= "" sett-desc))
+          [:p.text--larger sett-desc])
+        (when-not (or (nil? sett-who) (= "" sett-who))
+          [:div
+           [:h3 "Who are you?"]
+           [:p sett-who]])
+        (when-not (or (nil? sett-proj) (= "" sett-proj))
+          [:div
+           [:h3 "Are you staking in another projects?"]
+           [:p sett-proj]])]
        [:div {:bp "12 4@md"}]]
       [:div.validator__reviews
        [:div.validator__reviews__header
@@ -192,21 +196,26 @@
                     :value "Send"
                     :on-click #(rate address @recommend @review)}]]])
        [:div.validator__reviews__reviews
-        (for [[k v] (get-in @app-state [:reviews address])]
-          ^{:key k}
-          [:div.card.review
-           [:div.review__rating
-            [:img {:src (str "/images/" (if (:recommend v) "recommend" "warning") "_icon.svg") :width "26px" :height "26px"}]]
-           [:div.review__delegated
-            [:div
-             [:p "Delegated:"]
-             [:strong "160,000 ONE"]]]
-           [:div.review__content
-            [:p (:review v)]]
-           [:div.review__author
-            [:p "oneq3xye3"]
-            (let [d (js/Date. k)]
-              [:p (str (.getFullYear d) "." (.slice (str "0" (inc (.getMonth d))) (- 2)) "." (.slice (str "0" (.getDate d)) (- 2)))])]])]]
+        (for [[k v] (get-in @app-state [address :reviews])]
+          (let [delegated (filter #(when (= (:account v) (:delegator-address %)) %) (get-in @data [address :delegations]))
+                shift 0.000000000000000001]
+            ^{:key k}
+            [:div.card.review
+             [:div.review__rating
+              [:img {:src (str "/images/" (if (:recommend v) "recommend" "warning") "_icon.svg") :width "26px" :height "26px"}]]
+             [:div.review__delegated
+              [:div
+               (if (:amount (first delegated))
+                 [:div
+                  [:p "Delegated:"]
+                  [:strong (* shift (:amount (first delegated)))]]
+                 [:strong "Not delegated yet"])]]
+             [:div.review__content
+              [:p (:review v)]]
+             [:div.review__author
+              [:p "oneq3xye3"]
+              (let [d (js/Date. k)]
+                [:p (str (.getFullYear d) "." (.slice (str "0" (inc (.getMonth d))) (- 2)) "." (.slice (str "0" (.getDate d)) (- 2)))])]]))]]
       [:button.modal__closeBtn {:on-click #(close-modal :validatorPanel)} "X"]]]))
 
 (def search (atom ""))
@@ -217,8 +226,7 @@
 
 (defn main []
   (let [search (atom "")
-        active-filter (atom true)
-        _ (when-not (get-in @local [:own-validator :description]) (swap! local assoc-in [:own-validator :description] (str (:description ((keyword (get-in @local [:own-validator :address])) @data)))))]
+        active (atom true)]
     (fn []
       [:main
        [loginPanel]
@@ -266,10 +274,9 @@
                                                   :total-stake (get-in @data [k :total-stake])
                                                   :fee (get-in @data [k :fee])
                                                   :uptime (get-in @data [k :uptime])
-                                                  :rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 v)
-                                                  :warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 v)}})
-                                            (:reviews @app-state)))
-                  _ (println merged-data)]
+                                                  :rec (reduce-kv #(if (%3 :recommend) (inc %1) %1) 0 (:reviews v))
+                                                  :warn (reduce-kv #(if (%3 :recommend) %1 (inc %1)) 0 (:reviews v))}})
+                                            @app-state))]
               (doall
                (for [[address validator] (sort-by (comp (keyword (:column @column-sort)) second) #(if (:inc @column-sort) (compare %2 %1) (compare %1 %2)) merged-data)]
                  (when (and

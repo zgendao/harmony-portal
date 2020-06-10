@@ -20,7 +20,6 @@
   (into []
         (for [[r u] rmap]
           [u r]))) ""
-active-filte
 
 (defn make-bide-router [rmap]
   (b/router (transform-map rmap)))
