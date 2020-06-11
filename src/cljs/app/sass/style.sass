@@ -1,5 +1,6 @@
 @use 'navbar'
 @use 'inputs'
+@use 'loader'
 @use 'table'
 @use 'modal'
 @use 'login'
@@ -31,6 +32,10 @@ body
 a
   color: var(--primary-color)
   text-decoration: none
+  transition: color .2s
+
+  &:hover
+    color: #008cbb
 
 .text--larger
   font-size: 16px !important
@@ -164,6 +169,9 @@ body
     display: block
     margin-bottom: 20px
 
+    input
+      width: 100%
+
   .settings__bottom
     text-align: right
     padding: 0
@@ -171,12 +179,36 @@ body
     margin-top: 10px
 
 .u-cutText
-  max-width: 150px
+  //max-width: 150px
   overflow: hidden
   text-overflow: ellipsis
   white-space: nowrap
   @media (min-width: 960px)
-    max-width: 250px
+    //max-width: 250px
 
 .u-noWrap
   flex-wrap: nowrap
+
+  div
+    min-width: 0
+
+.tooltip
+  position: relative
+  margin: auto
+
+  a::after
+    content: attr(data-tooltip)
+    visibility: hidden
+    position: absolute
+    bottom: -40px
+    right: 0
+    background: white
+    border: 1px solid var(--border-color)
+    border-radius: 30px
+    padding: 5px 10px
+    color: var(--text-light)
+    z-index: 10
+
+  &:hover
+    a::after
+      visibility: visible !important

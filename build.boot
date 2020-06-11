@@ -122,9 +122,9 @@
          [d dir PATH #{str} "the set of directories to write to (target)."]
          (let [dir (if (seq dir) dir #{"target"})]
            (comp
-            (cljs :optimizations :advanced)
+            (cljs :optimizations :simple)
       ;(uglify)
-            (environ :env {:http-port "7000"})
+            (environ :env {:http-port "8000"})
             (aot)
             (pom)
             (uber)

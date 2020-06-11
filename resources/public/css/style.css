@@ -47,12 +47,17 @@ nav > div .collapse > div {
   }
 }
 nav > div .collapse > div a {
-  margin: 15px 10px;
+  padding: 15px 10px;
+  font-weight: 600;
 }
 @media (min-width: 720px) {
   nav > div .collapse > div a {
+    padding: 0;
     margin: auto 10px;
   }
+}
+nav > div .collapse > div a.u-cutText {
+  max-width: 300px;
 }
 @media (min-width: 720px) {
   nav > div .collapse {
@@ -104,9 +109,9 @@ textarea {
 }
 
 input:not(.input--active):not([type=checkbox]):focus, textarea:focus {
-  border-width: 1.5px;
+  border-width: 2px;
   border-color: var(--primary-color);
-  margin: 4.5px -0.5px;
+  margin: 4px -1px;
 }
 
 input::placeholder, textarea:placeholder {
@@ -187,6 +192,52 @@ input:checked + .slider:before {
   transform: translateX(17px);
 }
 
+.loadingScreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+}
+
+svg {
+  animation: 2s linear infinite svg-animation;
+  width: 50px;
+}
+
+@keyframes svg-animation {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(360deg);
+  }
+}
+circle {
+  animation: 1.4s ease-in-out infinite both circle-animation;
+  display: block;
+  fill: transparent;
+  stroke: var(--text-md);
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 280;
+  stroke-width: 10px;
+  transform-origin: 50% 50%;
+}
+
+@keyframes circle-animation {
+  0%, 25% {
+    stroke-dashoffset: 280;
+    transform: rotate(0);
+  }
+  50%, 75% {
+    stroke-dashoffset: 75;
+    transform: rotate(45deg);
+  }
+  100% {
+    stroke-dashoffset: 280;
+    transform: rotate(360deg);
+  }
+}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -211,9 +262,62 @@ table td img, table th img {
   vertical-align: top;
   margin-right: 5px;
 }
+table td.u-cutText, table th.u-cutText {
+  max-width: 150px;
+}
+@media (min-width: 960px) {
+  table td.u-cutText, table th.u-cutText {
+    max-width: 250px;
+  }
+}
 table th {
   text-transform: uppercase;
   font-weight: 700;
+  padding: 0 10px;
+}
+table th a {
+  display: inline-block;
+  color: var(--font-md);
+  position: relative;
+  transition: padding 0.2s, color 0.2s;
+  padding: 13px 0;
+}
+table th a:hover {
+  color: black;
+}
+table th.th--sortedBy {
+  border-bottom: 2px solid var(--primary-color);
+}
+@media (min-width: 960px) {
+  table th.th--sortedBy {
+    border-bottom: none;
+  }
+}
+table th.th--sortedBy a {
+  color: var(--primary-color);
+  padding-right: 20px;
+}
+@media (min-width: 960px) {
+  table th.th--sortedBy a {
+    border-bottom: 2px solid var(--primary-color);
+  }
+}
+table th.th--sortedBy a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  border-color: var(--primary-color) transparent transparent transparent;
+  transition: transform 0.4s;
+}
+table th.inc a::after {
+  transform: translateY(-50%) rotate(180deg);
 }
 table tbody tr {
   border-color: var(--border-color);
@@ -306,7 +410,7 @@ table tbody tr:nth-child(odd) {
   border-bottom: 1px solid var(--border-color);
 }
 @media (min-width: 960px) {
-  #validator > div:not(:first-child) {
+  #validator > div {
     padding: 0 30px;
   }
 }
@@ -333,32 +437,48 @@ table tbody tr:nth-child(odd) {
 @media (min-width: 960px) {
   #validator > div > div.validator__header__section {
     justify-content: space-around;
+    flex-wrap: nowrap;
   }
 }
-@media (max-width: 959px) {
-  #validator > div > div.validator__header__section:first-child {
-    padding-bottom: 0;
+#validator > div > div.validator__header__section:first-child {
+  padding-bottom: 0;
+  border-right: 1px solid var(--border-color);
+}
+#validator > div > div.validator__header__section:last-child {
+  padding-top: 0;
+}
+@media (min-width: 959px) {
+  #validator > div > div.validator__header__section {
+    padding: 30px 20px !important;
   }
-  #validator > div > div.validator__header__section:last-child {
-    padding-top: 0;
-  }
-  #validator > div > div.validator__header__section > div:last-child p {
-    text-align: right;
-    margin-left: auto;
-    padding-left: 10px;
+}
+#validator > div > div.validator__header__section .validator__header__dataWrapper p {
+  text-align: right;
+}
+@media (min-width: 959px) {
+  #validator > div > div.validator__header__section .validator__header__dataWrapper p {
+    text-align: left;
   }
 }
 #validator > div > div.validator__header__section .validator__header__profileWrapper {
   width: 100%;
 }
+@media (min-width: 960px) {
+  #validator > div > div.validator__header__section .validator__header__profileWrapper {
+    width: unset;
+  }
+}
 #validator > div > div.validator__header__section .validator__header__profileWrapper p.u-cutText {
   font-size: 16px;
-  max-width: 150px;
+  max-width: 130px;
   font-weight: 600;
 }
+#validator > div > div.validator__header__section .validator__header__labelWrapper {
+  min-width: 140px;
+}
 @media (min-width: 960px) {
-  #validator > div > div.validator__header__section .u-fit {
-    width: unset;
+  #validator > div > div.validator__header__section .validator__header__labelWrapper {
+    padding: 0 30px;
   }
 }
 #validator > div.validator__reviews {
@@ -540,6 +660,10 @@ body {
 a {
   color: var(--primary-color);
   text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: #008cbb;
 }
 
 .text--larger {
@@ -703,6 +827,9 @@ body {
   display: block;
   margin-bottom: 20px;
 }
+#settings .label--large input {
+  width: 100%;
+}
 #settings .settings__bottom {
   text-align: right;
   padding: 0;
@@ -711,19 +838,36 @@ body {
 }
 
 .u-cutText {
-  max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-@media (min-width: 960px) {
-  .u-cutText {
-    max-width: 250px;
-  }
-}
-
 .u-noWrap {
   flex-wrap: nowrap;
+}
+.u-noWrap div {
+  min-width: 0;
+}
+
+.tooltip {
+  position: relative;
+  margin: auto;
+}
+.tooltip a::after {
+  content: attr(data-tooltip);
+  visibility: hidden;
+  position: absolute;
+  bottom: -40px;
+  right: 0;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 30px;
+  padding: 5px 10px;
+  color: var(--text-light);
+  z-index: 10;
+}
+.tooltip:hover a::after {
+  visibility: visible !important;
 }
 
 /*# sourceMappingURL=style.css.map */

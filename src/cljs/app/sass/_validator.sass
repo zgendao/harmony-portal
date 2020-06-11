@@ -1,8 +1,7 @@
 #validator > div
   border-bottom: 1px solid var(--border-color)
-  &:not(:first-child)
-    @media (min-width: 960px)
-      padding: 0 30px
+  @media (min-width: 960px)
+    padding: 0 30px
 
   > div
     padding: 30px 20px
@@ -22,30 +21,37 @@
       justify-content: space-between
       @media (min-width: 960px)
         justify-content: space-around
+        flex-wrap: nowrap
 
-      @media (max-width: 959px)
-        &:first-child
-          padding-bottom: 0
-        &:last-child
-          padding-top: 0
+      &:first-child
+        padding-bottom: 0
+        border-right: 1px solid var(--border-color)
+      &:last-child
+        padding-top: 0
+          
+      @media (min-width: 959px)
+        padding: 30px 20px !important
       
-        > div:last-child p
-          text-align: right
-          margin-left: auto
-          padding-left: 10px
+      .validator__header__dataWrapper p
+        text-align: right
+        @media (min-width: 959px)
+          text-align: left
 
       .validator__header__profileWrapper
         width: 100%
-
-        p.u-cutText
-          font-size: 16px
-          max-width: 150px
-          font-weight: 600
-      
-      .u-fit
         @media (min-width: 960px)
           width: unset
 
+        p.u-cutText
+          font-size: 16px
+          max-width: 130px
+          font-weight: 600
+
+      .validator__header__labelWrapper
+        min-width: 140px
+        @media (min-width: 960px) 
+          padding: 0 30px
+      
   &.validator__reviews
     background-color: #FAFAFA
     border-bottom: none
