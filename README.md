@@ -1,6 +1,8 @@
 # Harmony Staking Portal
 
-## Build collaborative experiences and realtime apps
+## [Live](https://harmony.validator.community)
+
+## A social site for the harmony validator community
 
 ## Usage
 
