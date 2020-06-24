@@ -14,17 +14,19 @@ $breakpoint-md: 720px
 $breakpoint-sm: 480px
 
 :root
-  --background-color:#f6f7fb
-  --text-light:        grey
-  --text-md:         #555B68
-  --text-dark:       #4D4B5A
-  --border-color:    #ddd
-  --primary-color:   #00ADE8
-  --accent-color:    #F0FAFE
-  --breakpoint-md:     720px
+  --background-color:     #f6f7fb
+  --text-light:             grey
+  --text-md:              #555B68
+  --text-dark:            #4D4B5A
+  --border-color:         #ddd
+  --primary-color:        #00ADE8
+  --primary-color--hover: #0094c5
+  --accent-color:         #F0FAFE
+  --breakpoint-md:          720px
 
 *, *:before, *:after
   box-sizing: border-box
+  -webkit-tap-highlight-color: transparent
 
 body
   color: var(--text-dark)
@@ -35,10 +37,11 @@ a
   transition: color .2s
 
   &:hover
-    color: #008cbb
+    color: var(--primary-color--hover)
 
 .text--larger
   font-size: 16px !important
+  margin-bottom: 44px !important
   @media (min-width: 960px)
     font-size: 18px !important
   
@@ -70,6 +73,20 @@ body
     color: var(--text-md)
     margin-left: 20px
 
+    &.title__icon
+      display: inline-block
+      text-align: center
+      height: 30px
+      width: 30px
+      line-height: 30px
+      border-radius: 30px
+      border: 1px solid var(--border-color)
+      cursor: help
+
+      a
+        color: inherit
+        font-size: 16px
+
 #hotValidators 
   position: relative
   padding: 24px 0
@@ -91,6 +108,9 @@ body
       min-width: 176px
       text-align: center
       cursor: pointer
+
+      &:hover
+        background-color: #f8f8f8
 
       &:first-child
         margin-left: 20px
@@ -194,21 +214,46 @@ body
 
 .tooltip
   position: relative
-  margin: auto
+  margin: auto initial
+
+  @mixin tooltip__pseudo
+    visibility: hidden
+    opacity: 0
+    position: absolute
+    bottom: 0
+    background: white
+    z-index: 10
+    white-space: nowrap
+
+  a::before
+    @include tooltip__pseudo
+    content: attr(data-address)
+    top: 0
+    transition: opacity .3s, visibility .3s
+    max-width: 90%
+    overflow: hidden
+    text-overflow: ellipsis
+
+    @media (min-width: 720px)
+      right: 0
+      max-width: unset
 
   a::after
+    @include tooltip__pseudo
     content: attr(data-tooltip)
-    visibility: hidden
-    position: absolute
     bottom: -40px
-    right: 0
-    background: white
     border: 1px solid var(--border-color)
     border-radius: 30px
     padding: 5px 10px
     color: var(--text-light)
-    z-index: 10
+    font-weight: 400
+    font-size: 16px
+    line-height: initial
+    right: unset
+    left: 50%
+    transform: translateX(-50%)
 
   &:hover
-    a::after
-      visibility: visible !important
+    a::after, a::before
+      visibility: visible
+      opacity: 1

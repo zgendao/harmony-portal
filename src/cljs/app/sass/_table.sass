@@ -43,6 +43,10 @@ table
 
     &.th--sortedBy
       border-bottom: 2px solid var(--primary-color)
+
+      &:hover
+        border-bottom-color: var(--primary-color--hover)
+          
       @media (min-width: 960px)
         border-bottom: none
       
@@ -51,6 +55,13 @@ table
         padding-right: 20px
         @media (min-width: 960px)
           border-bottom: 2px solid var(--primary-color)
+          &:hover
+            border-bottom-color: var(--primary-color--hover)
+
+        &:hover
+          color: var(--primary-color--hover)
+          &::after
+            border-color: var(--primary-color--hover) transparent transparent transparent
 
         &::after
           content: ""
@@ -77,6 +88,12 @@ table
       border-width: 1px 0 1px 0
       cursor: pointer
 
+      &:hover
+        background-color: rgba(170, 170, 170, 0.1)
+
       &:nth-child(odd)
         background-color: var(--accent-color)
+
+        &:hover
+          background-color: rgba(87, 160, 194, 0.1)
       

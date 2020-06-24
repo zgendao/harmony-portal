@@ -1,4 +1,5 @@
 input, textarea, button
+  position: relative
   line-height: 2.8
   font-size: 16px
   font-weight: 500
@@ -9,6 +10,7 @@ input, textarea, button
   margin: 5px 0
   outline: none
   -webkit-appearance: none
+  transition: background .2s, color .2s
 
 textarea
   resize: none
@@ -16,7 +18,8 @@ textarea
   line-height: 1
   padding: 15px
 
-input:not(.input--active):not([type="checkbox"]):focus, textarea:focus
+input:not(.input--active):not([type="checkbox"]):focus, textarea:focus,
+input:not(.input--active):not([type="checkbox"]):focus + input[type="submit"]
   border-width: 2px
   border-color: var(--primary-color)
   margin: 4px -1px
@@ -33,9 +36,25 @@ input[type="submit"], button
   background-color: white
   font-weight: 600
 
+  &:hover
+    background-color: #EEEEEE
+
   &.input--active
     background-color: var(--primary-color)
     color: white
+
+    &:hover
+      background-color: #00a2d8
+
+  &.button--done::after
+    content: "✔"
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    background-color: inherit
+    border-radius: inherit
 
 .label--large
   font-size: 20px
@@ -83,6 +102,9 @@ input[type="submit"], button
 
 input:checked + .slider 
   background-color: var(--primary-color)
+
+  &:hover
+    background-color: var(--primary-color--hover)
 
 input:checked + .slider:before 
   -webkit-transform: translateX(17px)

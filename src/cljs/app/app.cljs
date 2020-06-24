@@ -3,18 +3,10 @@
    [reagent.core :as r]
    [app.views :refer [portal]]
    [app.storage :refer [app-state]]
-   [app.request :refer [get-validators fetch-validators get-accounts]]
+   [app.request :refer [get-validators fetch-validators]]
    [bide.core :as b]))
 
 (enable-console-print!)
-
-; (defn home-page [app-state]
-;   [:div "Home"
-;    [:p (str @app-state)]
-;    [:a {:on-click #(swap! app-state assoc "counter" (rand-int 1000))} "Assoc"]])
-;
-; (defn about-page []
-;   [:div "About"])
 
 (defn transform-map [rmap]
   (into []
@@ -38,7 +30,7 @@
 ; (defn page [name app-state]
 ;   [:div
 ;    [:nav
-;     [:div [nav-link :app.home "Homee"]]
+;     [:div [nav-link :app.home "Home"]]
 ;     [:div [nav-link :app.about "About"]]]
 ;    (case name
 ;      :app.home (home-page app-state)
@@ -55,7 +47,6 @@
                     :html5? true
                     :on-navigate (fn [name params query] (on-navigate name params query app-state))})
   (get-validators)
-  (get-accounts)
   (fetch-validators))
 
 (run app-state)

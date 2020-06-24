@@ -3,7 +3,7 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [cljs.core.async :refer [<!]]
             [cljs-http.client :as http]
-            [app.storage :refer [app-state local]]))
+            [app.storage :refer [app-state local state]]))
 
 (def data (atom {}))
 
@@ -33,17 +33,9 @@
                                            :lifetime-reward (validator :lifetime_reward_accumulated)
                                            :uptime (validator :uptime_percentage)
                                            :height (validator :creation-height)})
-                (when-not (get-in @app-state [address :description]) (swap! app-state assoc-in [address :description] (validator :details)))
-                (when-not (get-in @app-state [address :twitter]) (swap! app-state assoc-in [address :twitter] "https://twitter.com/harmonyprotocol"))))))))
+                (when-not (get-in @app-state [address :description]) (swap! app-state assoc-in [address :description] (validator :details)))))))))
 
 (defn fetch-validators []
   (go (let [response (<! (http/get "https://staking-explorer2-268108.appspot.com/networks/harmony/validators" {:with-credentials? false :headers {"Content-Type" "application/json"}}))
             addresses (into {} (map (fn [v] {(keyword (v :address)) {}}) ((response :body) :validators)))]
         (reset! app-state (merge addresses @app-state)))))
-
-(defn get-accounts []
-  (swap! local assoc :account "one1r3kwetfy3ekfah75qaedwlc72npqm2gkayn6ue"))
-  ; (.addEventListener js/window "message" #(.log js/console %))
-  ; (.postMessage js/window
-  ;               (clj->js {:type "FROM_HARMONY_IO", :payload "INIT_EXTENSION", :skipResponse false})
-  ;               "*"))

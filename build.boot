@@ -26,8 +26,10 @@
                  [org.clojure/tools.nrepl "0.2.13"]
 
                  [org.clojure/core.async "0.3.443"]
-                 [com.taoensso/sente        "1.11.0"] ; <--- Sente
-                 [com.taoensso/timbre       "4.10.0"]
+                 [async-interop "0.1.4"]
+
+                 [com.taoensso/sente "1.11.0"]
+                 [com.taoensso/timbre "4.10.0"]
                  [com.taoensso/encore "2.91.1"]
 
                  [brave/zente "0.1.3-SNAPSHOT"]
@@ -84,7 +86,7 @@
       :scm {:url ""}
       :license {"MIT" ""}}
  jar {:main        'app.core
-      :file        (str "app-" version "-standalone.jar")})
+      :file        "harmony-portal.jar"})
 
 (require '[system.repl :refer [init start stop go reset]]
          '[app.system :refer [dev-system]]

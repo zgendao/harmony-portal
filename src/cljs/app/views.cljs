@@ -1,18 +1,14 @@
 (ns app.views
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as reagent :refer [atom]]
-            [app.storage :refer [app-state local]]
-            [app.request :refer [data get-accounts]]
+            [app.storage :refer [app-state local state]]
+            [app.request :refer [data]]
             [goog.string :as gstring :refer [format]]
             [goog.string.format]
-            [clojure.string :as str :refer [includes? lower-case replace]])
-
+            [clojure.string :as str :refer [includes? lower-case replace]]
+            [async-interop.interop :refer [<p!]])
   (:import [goog.async Debouncer]))
 
-(def state (atom {:navbar-open false
-                  :logged-in false
-                  :loginPanel false
-                  :validatorPanel false
-                  :settingsPanel false}))
 (def review (atom ""))
 (def recommend (atom true))
 
@@ -40,11 +36,20 @@
     (reset! recommend true)))
 
 (defn login []
-  ;(swap! state assoc :logged-in true)
-  (close-modal :loginPanel))
+  (go
+    (if (.-harmony js/window)
+      (when-not (:account @local)
+        (let [account (js->clj (<p! (.getAccount (.-harmony js/window))))
+              address (get account "address")
+              addresses (into [] (map (fn [[k v]] (name k))) @data)]
+          (do (swap! local assoc :account address)
+              (when (some #(= address %) addresses)
+                (swap! local assoc :user-is-validator true)))))
+      (open-modal :loginPanel true))))
 
-(defn already-rated [id]
-  (if (map? (get-in @local [:reviews (keyword id)])) true false))
+(defn already-rated [address]
+  (let [delegators (into [] (map (fn [[k v]] (name (:account v))) (get-in @app-state [address :reviews])))]
+    (some #(= (@local :account) %) delegators)))
 
 (defn rate [address recommend review]
   (swap! local assoc-in [:reviews (keyword address)] {:recommend recommend :review review})
@@ -58,6 +63,11 @@
     (js/document.execCommand "copy")
     (.removeChild js/document.body temp)))
 
+(defn loading []
+  [:div.loadingScreen
+   [:svg {:viewBox "0 0 100 100" :xmlns "http://www.w3.org/2000/svg"}
+    [:circle {:cx "50" :cy "50" :r "45"}]]])
+
 (defn twitter-timeline [url]
   (fn []
     (reagent/create-class
@@ -69,24 +79,18 @@
                                  (aget (.getElementsByClassName js/document "twitter-embed") 0)
                                  script)))
       :reagent-render (fn [] [:section.twitterContainer
+                              [loading]
                               [:div.twitter-embed
                                [:a.twitter-timeline
                                 {:href url
                                  :data-chrome "noheader nofooter noborders"
                                  :data-lang "en"
-                                 :data-width "300"
-                                 :data-height "300"}
+                                 :data-width "100%"
+                                 :data-height "100%"}
                                 ""]]])})))
-
-(defn loading []
-  [:div.loadingScreen
-   [:svg {:viewBox "0 0 100 100" :xmlns "http://www.w3.org/2000/svg"}
-    [:circle {:cx "50" :cy "50" :r "45"}]]])
 
 (defn navbar []
   [:nav
-   ;[:p (str @app-state)]
-   ;(reset! app-state {:reviews {}})
    [:div {:bp "container flex"}
     [:div.navbar__brand
      [:a {:href "https://harmony.one/" :target "_blank" :bp "flex"}
@@ -94,15 +98,17 @@
       [:p "Harmony Validator Community"]]]
     [:div.collapse {:bp "flex" :class [(when (@state :navbar-open) "u-show")]}
      [:div {:class [(when (:account @local) "u-show")]}
-      [:a {:href "#/" :on-click #(open-modal :settingsPanel true)} "Settings"]
+      (when (@local :user-is-validator)
+        [:p
+         [:a {:on-click #(open-modal :settingsPanel true)} "Settings"]])
       [:p.tooltip
-       [:a.u-cutText {:href "#/" :data-tooltip (str (:account @local))
+       [:a.u-cutText {:data-tooltip "Click to copy" :data-address (str (:account @local))
                       :on-click #(do (copy-to-clipboard (:account @local))
                                      (-> % .-target (.setAttribute "data-tooltip" "Copied")))
                       :on-mouse-out #(-> % .-target (.setAttribute "data-tooltip" "Click to copy"))}
         "Your address"]]]
      [:div {:class [(when-not (:account @local) "u-show")]}
-      [:a {:href "#/" :on-click #(open-modal :loginPanel true)} "Login"]]]
+      [:a {:on-click #(login)} "Login"]]]
     [:button.navbar__togglr {:bp "hide@md"
                              :on-click #(swap! state assoc :navbar-open (not (@state :navbar-open)))}
      [:span.navbar__togglr__bars]
@@ -113,11 +119,8 @@
   [:div.modalWrapper {:class (when (@state :loginPanel) "u-show")
                       :on-click #(close-modal :loginPanel)}
    [:div#loginPanel.card.modal {:on-click (fn [e] (.stopPropagation e))}
-    [:h2.title "Login with Harmony Browser Extension"]
-    [:p "Here's the list of accounts we've received from the Harmony Browser Extension. Click the one you want to use!"]
-    [:div.card {:on-click #(login)}
-     [:h3 "Brunya"]
-     [:p "one1d6vmmq6...maxy330d"]]]])
+    [:h2.title "Login with your Math Wallet"]
+    [:a {:href "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc" :target "_blank"} "Chrome Extension"]]])
 
 (defn settingsPanel []
   (let [description (atom (get-in @app-state [(keyword (:account @local)) :description]))
@@ -151,12 +154,15 @@
                   :value @twitter
                   :on-change #(reset! twitter (-> % .-target .-value))}]]
         [:div.settings__bottom
-         [:input {:type "submit"
-                  :value "Save Changes"
-                  :on-click #(do (swap! app-state assoc-in [(keyword (:account @local)) :description] @description)
-                                 (swap! app-state assoc-in [(keyword (:account @local)) :whoareyou] @whoareyou)
-                                 (swap! app-state assoc-in [(keyword (:account @local)) :projects] @projects)
-                                 (swap! app-state assoc-in [(keyword (:account @local)) :twitter] @twitter))}]]]])))
+         [:button {:type "submit"
+                   :on-click #(do (swap! app-state assoc-in [(keyword (:account @local)) :description] @description)
+                                  (swap! app-state assoc-in [(keyword (:account @local)) :whoareyou] @whoareyou)
+                                  (swap! app-state assoc-in [(keyword (:account @local)) :projects] @projects)
+                                  (swap! app-state assoc-in [(keyword (:account @local)) :twitter] @twitter)
+                                  (-> % .-target (.setAttribute "class" "button--done"))
+                                  (close-modal :settingsPanel))
+                   :on-mouse-out #(-> % .-target (.setAttribute "class" ""))}
+          "Save Changes"]]]])))
 
 (defn validatorPanel []
   (let [address (:validatorPanel @state)
@@ -198,7 +204,7 @@
         [:div.validator__header__dataWrapper
          [:div.tooltip
           [:p.u-cutText
-           [:a {:href "#/" :data-tooltip "Click to copy"
+           [:a {:data-tooltip "Click to copy"
                 :on-click #(do (copy-to-clipboard (name address))
                                (-> % .-target (.setAttribute "data-tooltip" "Copied")))
                 :on-mouse-out #(-> % .-target (.setAttribute "data-tooltip" "Click to copy"))}
@@ -209,16 +215,13 @@
          [:p [:b (pformat (:uptime validator))]]]]]
       [:div {:bp "grid gap-none"}
        [:div {:bp "12 8@md"}
-        (when-not (or (nil? sett-desc) (= "" sett-desc))
-          [:p.text--larger sett-desc])
-        (when-not (or (nil? sett-who) (= "" sett-who))
-          [:div
-           [:h3 "Who are you?"]
-           [:p sett-who]])
-        (when-not (or (nil? sett-proj) (= "" sett-proj))
-          [:div
-           [:h3 "Are you staking in another projects?"]
-           [:p sett-proj]])]
+        [:p.text--larger (if (or (nil? sett-desc) (= "" sett-desc)) "-" sett-desc)]
+        [:div
+         [:h3 "Who are you?"]
+         [:p (if (or (nil? sett-who) (= "" sett-who)) "-" sett-who)]]
+        [:div
+         [:h3 "Are you staking in another projects?"]
+         [:p (if (or (nil? sett-proj) (= "" sett-proj)) "-" sett-proj)]]]
        (when-not (or (nil? sett-twitter) (= "" sett-twitter))
          [:div {:bp "12 4@md"}
           [twitter-timeline sett-twitter]])]
@@ -229,7 +232,7 @@
         [:img {:src "/images/warning_icon.svg"}]
         [:span (if warn warn 0)]
         [:h3 (str (+ rec warn) " REVIEWS")]]
-       (when-not (already-rated address)
+       (when (and (not (already-rated address)) (:account @local))
          [:div.validator__reviews__controls
           [:div
            [:button {:class (when @recommend "input--active") :type "button" :on-click #(reset! recommend true)}
@@ -261,7 +264,7 @@
                 (if (:amount (first delegated))
                   [:div
                    [:p "Delegated:"]
-                   [:strong (* shift (:amount (first delegated)))]]
+                   [:strong (format "%.2f" (* shift (:amount (first delegated))))]]
                   [:strong "Not delegated yet"])]]
               [:div.review__content
                [:p (:review v)]]
@@ -298,10 +301,11 @@
          [loginPanel]
          [settingsPanel]
          [validatorPanel]
-         [twitter-timeline]
          [:div {:bp "container"}
           [:div#hotValidators
-           [:h2.title "Hot Validators"]
+           [:h2.title "Hot Validators"
+            [:span.title__icon.tooltip
+             [:a {:data-tooltip "The newest active validators"} "i"]]]
            [:div.cardWrapper
             (for [[address validator] (take-last 5 (filter (fn [[k v]] (if (:active v) k)) @data))]
               (let [image (str "https://raw.githubusercontent.com/harmony-one/validator-logos/master/validators/" (name address) ".jpg")
@@ -329,22 +333,22 @@
               [:tr
                [:th {:colSpan 2 :class [(when (= (:column @column-sort) "rec")
                                           (if (:inc @column-sort) "th--sortedBy inc" "th--sortedBy desc"))]}
-                [:a {:href "#/" :on-click #(switch-sort "rec")} "Rate"]]
+                [:a {:on-click #(switch-sort "rec")} "Rate"]]
                [:th {:class [(when (= (:column @column-sort) "name")
                                (if (:inc @column-sort) "th--sortedBy inc" "th--sortedBy desc"))]}
-                [:a {:href "#/" :on-click #(switch-sort "name")} "Name"]]
+                [:a {:on-click #(switch-sort "name")} "Name"]]
                [:th {:class [(when (= (:column @column-sort) "return")
                                (if (:inc @column-sort) "th--sortedBy inc" "th--sortedBy desc"))]}
-                [:a {:href "#/" :on-click #(switch-sort "return")} "Expected return"]]
+                [:a {:on-click #(switch-sort "return")} "Expected return"]]
                [:th {:class [(when (= (:column @column-sort) "total-stake")
                                (if (:inc @column-sort) "th--sortedBy inc" "th--sortedBy desc"))]}
-                [:a {:href "#/" :on-click #(switch-sort "total-stake")} "Stake"]]
+                [:a {:on-click #(switch-sort "total-stake")} "Stake"]]
                [:th {:class [(when (= (:column @column-sort) "fee")
                                (if (:inc @column-sort) "th--sortedBy inc" "th--sortedBy desc"))]}
-                [:a {:href "#/" :on-click #(switch-sort "fee")} "Fees"]]
+                [:a {:on-click #(switch-sort "fee")} "Fees"]]
                [:th {:class [(when (= (:column @column-sort) "uptime")
                                (if (:inc @column-sort) "th--sortedBy inc" "th--sortedBy desc"))]}
-                [:a {:href "#/" :on-click #(switch-sort "uptime")} "Uptime"]]]]
+                [:a {:on-click #(switch-sort "uptime")} "Uptime"]]]]
              [:tbody
               (doall
                (for [[address validator] filtered]
