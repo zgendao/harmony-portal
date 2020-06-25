@@ -252,8 +252,8 @@
                     :on-click #(rate address @recommend @review)}]]])
        [:div.validator__reviews__reviews
         (doall
-         (for [[k v] (get-in @app-state [address :reviews])]
-           (let [delegated (filter #(when (= (:account v) (:delegator-address %)) %) (get-in @data [address :delegations]))
+         (for [[k v] (into (sorted-map-by >) (get-in @app-state [address :reviews]))]
+           (let [delegated (first (filter #(when (= (:account v) (:delegator-address %)) %) (get-in @data [address :delegations])))
                  shift 0.000000000000000001]
              ^{:key k}
              [:div.card.review
@@ -261,15 +261,15 @@
                [:img {:src (str "/images/" (if (:recommend v) "recommend" "warning") "_icon.svg") :width "26px" :height "26px"}]]
               [:div.review__delegated
                [:div
-                (if (:amount (first delegated))
+                (if (:amount delegated)
                   [:div
                    [:p "Delegated:"]
-                   [:strong (format "%.2f" (* shift (:amount (first delegated))))]]
+                   [:strong (format "%.2f" (* shift (:amount delegated)))]]
                   [:strong "Not delegated yet"])]]
               [:div.review__content
                [:p (:review v)]]
               [:div.review__author
-               [:p "oneq3xye3"]
+               [:p (:delegator-address delegated)]
                (let [d (js/Date. k)]
                  [:p (str (.getFullYear d) "." (.slice (str "0" (inc (.getMonth d))) (- 2)) "." (.slice (str "0" (.getDate d)) (- 2)))])]])))]]
       [:button.modal__closeBtn {:on-click #(close-modal :validatorPanel)} "X"]]]))
