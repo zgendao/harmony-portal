@@ -93,7 +93,7 @@
   [:nav
    [:div {:bp "container flex"}
     [:div.navbar__brand
-     [:a {:href "https://harmony.one/" :target "_blank" :bp "flex"}
+     [:a {:href "https://harmony.one/" :target "_BLANK" :bp "flex" :style {:height "30px"}}
       [:img {:src "./images/logo1.png" :width "25px" :height "25px"}]
       [:p "Harmony Validator Community"]]]
     [:div.collapse {:bp "flex" :class [(when (@state :navbar-open) "u-show")]}
@@ -120,7 +120,7 @@
                       :on-click #(close-modal :loginPanel)}
    [:div#loginPanel.card.modal {:on-click (fn [e] (.stopPropagation e))}
     [:h2.title "Login with your Math Wallet"]
-    [:a {:href "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc" :target "_blank"} "Chrome Extension"]]])
+    [:a {:href "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc" :target "_BLANK"} "Chrome Extension"]]])
 
 (defn settingsPanel []
   (let [description (atom (get-in @app-state [(keyword (:account @local)) :description]))
@@ -183,8 +183,9 @@
        [:div.validator__header__section {:bp "12 6@lg flex"}
         [:div.validator__header__profileWrapper {:bp "flex text-center"}
          [:div {:style {:margin "auto"}}
-          (when address [:img {:src image :onError #(set! (-> % .-target .-src) generated) :width "25px" :height "25px"}])
-          [:p.u-cutText {:title (:name validator)} (:name validator)]]]
+          [:a {:href (str "https://staking.harmony.one/validators/" (when address (name address))) :target "_BLANK"}
+           (when address [:img {:src image :onError #(set! (-> % .-target .-src) generated) :width "25px" :height "25px"}])
+           [:p.u-cutText {:title (:name validator)} (:name validator)]]]]
         [:div.validator__header__labelWrapper
          [:p "Total staked:"]
          [:p "Delegated:"]
@@ -204,10 +205,9 @@
         [:div.validator__header__dataWrapper
          [:div.tooltip
           [:p.u-cutText
-           [:a {:data-tooltip "Click to copy"
-                :on-click #(do (copy-to-clipboard (name address))
-                               (-> % .-target (.setAttribute "data-tooltip" "Copied")))
-                :on-mouse-out #(-> % .-target (.setAttribute "data-tooltip" "Click to copy"))}
+           [:a {:data-tooltip "Click to explore"
+                :href (str "https://explorer.harmony.one/#/address/" (when address (name address)))
+                :target "_BLANK"}
             [:b address]]]]
          [:p.u-cutText {:title (:website validator)}
           [:a {:href (:website validator) :target "_BLANK"} [:b (:website validator)]]]
@@ -245,7 +245,9 @@
            [:input {:type "text"
                     :placeholder "Write a review"
                     :value @review
-                    :on-change #(reset! review (-> % .-target .-value))}]
+                    :on-change #(reset! review (-> % .-target .-value))
+                    :on-key-press #(when (= (.-key %) "Enter")
+                                     (rate address @recommend @review))}]
            [:input {:class "input--active"
                     :type "submit"
                     :value "Send"
@@ -254,6 +256,7 @@
         (doall
          (for [[k v] (into (sorted-map-by >) (get-in @app-state [address :reviews]))]
            (let [delegated (first (filter #(when (= (:account v) (:delegator-address %)) %) (get-in @data [address :delegations])))
+                 _ (println v)
                  shift 0.000000000000000001]
              ^{:key k}
              [:div.card.review
@@ -265,11 +268,11 @@
                   [:div
                    [:p "Delegated:"]
                    [:strong (format "%.2f" (* shift (:amount delegated)))]]
-                  [:strong "Not delegated yet"])]]
+                  [:strong "Not delegating."])]]
               [:div.review__content
                [:p (:review v)]]
               [:div.review__author
-               [:p (:delegator-address delegated)]
+               [:p (:account v)]
                (let [d (js/Date. k)]
                  [:p (str (.getFullYear d) "." (.slice (str "0" (inc (.getMonth d))) (- 2)) "." (.slice (str "0" (.getDate d)) (- 2)))])]])))]]
       [:button.modal__closeBtn {:on-click #(close-modal :validatorPanel)} "X"]]]))
