@@ -14,21 +14,18 @@ nav > div {
     padding: 16px 0;
   }
 }
-nav > div .navbar__brand a {
-  height: 100%;
-}
-nav > div .navbar__brand a img {
+nav > div .navbar__brand img {
   margin: auto 0;
   margin-right: 10px;
 }
-nav > div .navbar__brand a p {
+nav > div .navbar__brand p {
   color: var(--text-md);
   font-weight: 600;
   font-size: 18px;
   margin: auto 0;
 }
 @media (min-width: 960px) {
-  nav > div .navbar__brand a p {
+  nav > div .navbar__brand p {
     font-size: 22px;
   }
 }
@@ -70,8 +67,8 @@ nav > div .collapse > div p.u-cutText {
 }
 nav > div .navbar__togglr {
   position: absolute;
-  right: 15px;
-  top: 15px;
+  right: 10px;
+  top: 3px;
   background: none;
   border: none;
   outline: none;
@@ -89,15 +86,14 @@ nav .u-show {
   display: flex !important;
 }
 
-input, textarea, button {
+input, textarea, button, .btn {
   position: relative;
-  line-height: 2.8;
   font-size: 16px;
   font-weight: 500;
   font-family: "Nunito", sans-serif;
   border: 1px solid var(--border-color);
   border-radius: 15px;
-  padding: 0 15px;
+  padding: 12px 15px;
   margin: 5px 0;
   outline: none;
   -webkit-appearance: none;
@@ -127,28 +123,29 @@ input::placeholder, textarea:placeholder {
   border-radius: 50px;
 }
 
-input[type=submit], button {
+input[type=submit], button, .btn {
   cursor: pointer;
   background-color: white;
   font-weight: 600;
 }
-input[type=submit]:hover, button:hover {
+input[type=submit]:hover, button:hover, .btn:hover {
   background-color: #EEEEEE;
 }
-input[type=submit].input--active, button.input--active {
+input[type=submit].input--active, button.input--active, .btn.input--active {
   background-color: var(--primary-color);
   color: white;
 }
-input[type=submit].input--active:hover, button.input--active:hover {
+input[type=submit].input--active:hover, button.input--active:hover, .btn.input--active:hover {
   background-color: #00a2d8;
 }
-input[type=submit].button--done::after, button.button--done::after {
+input[type=submit].button--done::after, button.button--done::after, .btn.button--done::after {
   content: "✔";
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+  line-height: 2.8;
   background-color: inherit;
   border-radius: inherit;
 }
@@ -429,31 +426,14 @@ table tbody tr:nth-child(odd):hover {
 }
 #loginPanel p {
   color: var(--text-md);
-  margin-bottom: 50px;
+  margin: 25px 0 35px 0;
+  text-align: justify;
 }
-#loginPanel .card {
-  text-align: left;
-  margin: 15px 0;
-  padding: 20px 30px;
-  cursor: pointer;
-  transition: all 0.3s;
+#loginPanel .btnContainer {
+  text-align: right;
 }
-#loginPanel .card:hover {
-  background-color: #f5f5f5;
-}
-#loginPanel .card h3 {
-  margin: 0;
-  font-weight: 600;
-}
-#loginPanel .card p {
-  color: var(--primary-color);
-  margin: 0;
-}
-#loginPanel input {
-  border-radius: 50px;
-  line-height: 2.5;
-  padding: 0 30px;
-  margin-bottom: 20px;
+#loginPanel .btnContainer .btn {
+  display: inline-block;
 }
 
 #validator > div {
@@ -622,7 +602,7 @@ table tbody tr:nth-child(odd):hover {
   #validator > div.validator__reviews .validator__reviews__reviews .review {
     display: flex;
     flex-direction: column-reverse;
-    padding: 25px 170px 25px 90px;
+    padding: 25px 200px 25px 90px;
   }
 }
 #validator > div.validator__reviews .validator__reviews__reviews .review p {
@@ -675,6 +655,7 @@ table tbody tr:nth-child(odd):hover {
 }
 #validator > div.validator__reviews .validator__reviews__reviews .review .review__author p {
   margin: 0;
+  max-width: 100px;
 }
 @media (min-width: 960px) {
   #validator > div.validator__reviews .validator__reviews__reviews .review .review__author p:first-child {
@@ -717,6 +698,7 @@ a {
   color: var(--primary-color);
   text-decoration: none;
   transition: color 0.2s;
+  cursor: pointer;
 }
 a:hover {
   color: var(--primary-color--hover);
@@ -761,11 +743,11 @@ body {
   font-size: 20px;
   margin: 12px 0;
 }
-.title span {
+.title > span {
   color: var(--text-md);
   margin-left: 20px;
 }
-.title span.title__icon {
+.title > span.title__icon {
   display: inline-block;
   text-align: center;
   height: 30px;
@@ -775,7 +757,7 @@ body {
   border: 1px solid var(--border-color);
   cursor: help;
 }
-.title span.title__icon a {
+.title > span.title__icon span {
   color: inherit;
   font-size: 16px;
 }

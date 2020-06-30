@@ -4,7 +4,8 @@
    [app.views :refer [portal]]
    [app.storage :refer [app-state]]
    [app.request :refer [get-validators fetch-validators]]
-   [bide.core :as b]))
+   [bide.core :as b]
+   [app.peekaboo :as peekaboo]))
 
 (enable-console-print!)
 
@@ -47,6 +48,7 @@
                     :html5? true
                     :on-navigate (fn [name params query] (on-navigate name params query app-state))})
   (get-validators)
-  (fetch-validators))
+  (fetch-validators)
+  (peekaboo/gift "7d119aea-f0fb-4ecd-8771-d39978e06046"))
 
 (run app-state)

@@ -93,14 +93,13 @@
   [:nav
    [:div {:bp "container flex"}
     [:div.navbar__brand
-     [:a {:href "https://harmony.one/" :target "_BLANK" :bp "flex" :style {:height "30px"}}
+     [:a {:href "https://harmony.one/" :target "_BLANK" :bp "flex"}
       [:img {:src "./images/logo1.png" :width "25px" :height "25px"}]
       [:p "Harmony Validator Community"]]]
     [:div.collapse {:bp "flex" :class [(when (@state :navbar-open) "u-show")]}
      [:div {:class [(when (:account @local) "u-show")]}
       (when (@local :user-is-validator)
-        [:p
-         [:a {:on-click #(open-modal :settingsPanel true)} "Settings"]])
+        [:p [:a {:on-click #(open-modal :settingsPanel true)} "Settings"]])
       [:p.tooltip
        [:a.u-cutText {:data-tooltip "Click to copy" :data-address (str (:account @local))
                       :on-click #(do (copy-to-clipboard (:account @local))
@@ -108,7 +107,7 @@
                       :on-mouse-out #(-> % .-target (.setAttribute "data-tooltip" "Click to copy"))}
         "Your address"]]]
      [:div {:class [(when-not (:account @local) "u-show")]}
-      [:a {:on-click #(login)} "Login"]]]
+      [:p [:a {:on-click #(login)} "Login"]]]]
     [:button.navbar__togglr {:bp "hide@md"
                              :on-click #(swap! state assoc :navbar-open (not (@state :navbar-open)))}
      [:span.navbar__togglr__bars]
@@ -119,8 +118,12 @@
   [:div.modalWrapper {:class (when (@state :loginPanel) "u-show")
                       :on-click #(close-modal :loginPanel)}
    [:div#loginPanel.card.modal {:on-click (fn [e] (.stopPropagation e))}
-    [:h2.title "Login with your Math Wallet"]
-    [:a {:href "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc" :target "_BLANK"} "Chrome Extension"]]])
+    [:h2.title "Login with Math Wallet"]
+    [:p [:a {:href "https://mathwallet.org/" :target "_BLANK"} "Math Wallet"]
+     " is a multi-platform universal crypto wallet to store your tokens.
+         Add the Chrome extension and quickly import your Harmony wallet in it to log in!"]
+    [:div.btnContainer
+     [:a.btn.input--active {:href "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc" :target "_BLANK"} "Add Chrome Extension"]]]])
 
 (defn settingsPanel []
   (let [description (atom (get-in @app-state [(keyword (:account @local)) :description]))
@@ -247,11 +250,12 @@
                     :value @review
                     :on-change #(reset! review (-> % .-target .-value))
                     :on-key-press #(when (= (.-key %) "Enter")
-                                     (rate address @recommend @review))}]
+                                     (when (not-empty @review)
+                                       (rate address @recommend @review)))}]
            [:input {:class "input--active"
                     :type "submit"
                     :value "Send"
-                    :on-click #(rate address @recommend @review)}]]])
+                    :on-click #(when (not-empty @review) (rate address @recommend @review))}]]])
        [:div.validator__reviews__reviews
         (doall
          (for [[k v] (into (sorted-map-by >) (get-in @app-state [address :reviews]))]
@@ -272,7 +276,7 @@
               [:div.review__content
                [:p (:review v)]]
               [:div.review__author
-               [:p (:account v)]
+               [:p.u-cutText {:title (:account v)} (:account v)]
                (let [d (js/Date. k)]
                  [:p (str (.getFullYear d) "." (.slice (str "0" (inc (.getMonth d))) (- 2)) "." (.slice (str "0" (.getDate d)) (- 2)))])]])))]]
       [:button.modal__closeBtn {:on-click #(close-modal :validatorPanel)} "X"]]]))
@@ -308,7 +312,7 @@
           [:div#hotValidators
            [:h2.title "Hot Validators"
             [:span.title__icon.tooltip
-             [:a {:data-tooltip "The newest active validators"} "i"]]]
+             [:span {:data-tooltip "The newest active validators"} "i"]]]
            [:div.cardWrapper
             (for [[address validator] (take-last 5 (filter (fn [[k v]] (if (:active v) k)) @data))]
               (let [image (str "https://raw.githubusercontent.com/harmony-one/validator-logos/master/validators/" (name address) ".jpg")
