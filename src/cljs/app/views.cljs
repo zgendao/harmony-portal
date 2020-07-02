@@ -283,7 +283,7 @@
 
 (def search (atom ""))
 (def active (atom true))
-(def column-sort (atom {:column "return" :inc false}))
+(def column-sort (atom {:column "rec" :inc false}))
 (defn switch-sort [column]
   (swap! column-sort assoc :column column :inc (if (= (:column @column-sort) column) (not (:inc @column-sort)) false)))
 
@@ -312,7 +312,7 @@
           [:div#hotValidators
            [:h2.title "Hot Validators"
             [:span.title__icon.tooltip
-             [:span {:data-tooltip "The newest active validators"} "i"]]]
+             [:a {:style {:color "inherit" :cursor "help"} :data-tooltip "The newest active validators"} "i"]]]
            [:div.cardWrapper
             (for [[address validator] (take-last 5 (filter (fn [[k v]] (if (:active v) k)) @data))]
               (let [image (str "https://raw.githubusercontent.com/harmony-one/validator-logos/master/validators/" (name address) ".jpg")
