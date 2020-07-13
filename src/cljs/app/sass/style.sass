@@ -84,9 +84,10 @@ body
       border: 1px solid var(--border-color)
       cursor: help
 
-      span
+      a, span
         color: inherit
         font-size: 16px
+        cursor: help
 
 #hotValidators 
   position: relative
@@ -215,7 +216,6 @@ body
 
 .tooltip
   position: relative
-  margin: auto initial
 
   @mixin tooltip__pseudo
     visibility: hidden
@@ -258,3 +258,16 @@ body
     a::after, a::before
       visibility: visible
       opacity: 1
+
+
+#footer
+  display: flex
+  justify-content: space-between
+  padding: 20px 10px 10px 10px
+  font-size: 14px
+  @media (max-width: 900px)
+    flex-direction: column
+    padding-bottom: 20px
+    
+    >p
+      margin: 5px 0

@@ -115,15 +115,19 @@
      [:span.navbar__togglr__bars]]]])
 
 (defn loginPanel []
-  [:div.modalWrapper {:class (when (@state :loginPanel) "u-show")
-                      :on-click #(close-modal :loginPanel)}
-   [:div#loginPanel.card.modal {:on-click (fn [e] (.stopPropagation e))}
-    [:h2.title "Login with Math Wallet"]
-    [:p [:a {:href "https://mathwallet.org/" :target "_BLANK"} "Math Wallet"]
-     " is a multi-platform universal crypto wallet to store your tokens.
-         Add the Chrome extension and quickly import your Harmony wallet in it to log in!"]
-    [:div.btnContainer
-     [:a.btn.input--active {:href "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc" :target "_BLANK"} "Add Chrome Extension"]]]])
+  (let [isMobile (< js/window.screen.width 1000)]
+    [:div.modalWrapper {:class (when (@state :loginPanel) "u-show")
+                        :on-click #(close-modal :loginPanel)
+                        :style {:z-index "3"}}
+     [:div#loginPanel.card.modal {:on-click (fn [e] (.stopPropagation e))}
+      [:h2.title "Login " (when isMobile "from your desktop ") "with Math Wallet"]
+      [:p [:a {:href "https://mathwallet.org/" :target "_BLANK"} "Math Wallet"]
+       " is a multi-platform universal crypto wallet to store your tokens. "
+       (if isMobile "Open the site from your desktop, and use Math Wallet's browser extension to log in with your Harmony account!"
+           "Add the Chrome extension, and quickly import your Harmony wallet in it to log in!")]
+      (when (not isMobile)
+        [:div.btnContainer
+         [:a.btn.input--active {:href "https://chrome.google.com/webstore/detail/math-wallet/afbcbjpbpfadlkmhmclhkeeodmamcflc" :target "_BLANK"} "Add Chrome Extension"]])]]))
 
 (defn settingsPanel []
   (let [description (atom (get-in @app-state [(keyword (:account @local)) :description]))
@@ -235,27 +239,29 @@
         [:img {:src "/images/warning_icon.svg"}]
         [:span (if warn warn 0)]
         [:h3 (str (+ rec warn) " REVIEWS")]]
-       (when (and (not (already-rated address)) (:account @local))
-         [:div.validator__reviews__controls
-          [:div
-           [:button {:class (when @recommend "input--active") :type "button" :on-click #(reset! recommend true)}
-            [:img {:src "/images/recommend_icon.svg"}]
-            "Recommend"]
-           [:button {:class (when-not @recommend "input--active") :type "button" :on-click #(reset! recommend false)}
-            [:img {:src "/images/warning_icon.svg"}]
-            "Warning"]]
-          [:div {:bp "fill"}
-           [:input {:type "text"
-                    :placeholder "Write a review"
-                    :value @review
-                    :on-change #(reset! review (-> % .-target .-value))
-                    :on-key-press #(when (= (.-key %) "Enter")
-                                     (when (not-empty @review)
-                                       (rate address @recommend @review)))}]
-           [:input {:class "input--active"
-                    :type "submit"
-                    :value "Send"
-                    :on-click #(when (not-empty @review) (rate address @recommend @review))}]]])
+       [:div.validator__reviews__controls
+        (if (:account @local)
+          (when (not (already-rated address))
+            [:div
+             [:button {:class (when @recommend "input--active") :type "button" :on-click #(reset! recommend true)}
+              [:img {:src "/images/recommend_icon.svg"}]
+              "Recommend"]
+             [:button {:class (when-not @recommend "input--active") :type "button" :on-click #(reset! recommend false)}
+              [:img {:src "/images/warning_icon.svg"}]
+              "Warning"]]
+            [:div {:bp "fill"}
+             [:input {:type "text"
+                      :placeholder "Write a review"
+                      :value @review
+                      :on-change #(reset! review (-> % .-target .-value))
+                      :on-key-press #(when (= (.-key %) "Enter")
+                                       (when (not-empty @review)
+                                         (rate address @recommend @review)))}]
+             [:input {:class "input--active"
+                      :type "submit"
+                      :value "Send"
+                      :on-click #(when (not-empty @review) (rate address @recommend @review))}]])
+          [:p [:a {:on-click #(login)} "Login"] " to write a review"])]
        [:div.validator__reviews__reviews
         (doall
          (for [[k v] (into (sorted-map-by >) (get-in @app-state [address :reviews]))]
@@ -312,7 +318,7 @@
           [:div#hotValidators
            [:h2.title "Hot Validators"
             [:span.title__icon.tooltip
-             [:a {:style {:color "inherit" :cursor "help"} :data-tooltip "The newest active validators"} "i"]]]
+             [:a {:data-tooltip "The newest active validators"} "i"]]]
            [:div.cardWrapper
             (for [[address validator] (take-last 5 (filter (fn [[k v]] (if (:active v) k)) @data))]
               (let [image (str "https://raw.githubusercontent.com/harmony-one/validator-logos/master/validators/" (name address) ".jpg")
@@ -367,7 +373,11 @@
                   [:td (pformat (:return validator))]
                   [:td (vformat (:total-stake validator))]
                   [:td (pformat (:fee validator))]
-                  [:td (pformat (:uptime validator))]]))]]]]]]))))
+                  [:td (pformat (:uptime validator))]]))]]]]
+          [:div#footer
+           [:p "Made by " [:a {:href "https://zgen.hu"} "ZGEN DAO"] ", the bureaucracy-free online guild."]
+           [:p "Send your feature requests to: " [:a {:href "mailto:contact@zgen.hu"} "crypto@zgen.hu"]]
+           [:p "Source: " [:a {:href "https://github.com/zgendao/harmony-portal"} "zgendao/harmony-portal"]]]]]))))
 
 (defn portal []
   [:<>

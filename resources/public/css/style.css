@@ -553,6 +553,9 @@ table tbody tr:nth-child(odd):hover {
     flex-direction: row;
   }
 }
+#validator > div.validator__reviews .validator__reviews__controls > p {
+  padding: 0 15px;
+}
 #validator > div.validator__reviews .validator__reviews__controls > div {
   padding: 0 10px;
   display: flex;
@@ -757,9 +760,10 @@ body {
   border: 1px solid var(--border-color);
   cursor: help;
 }
-.title > span.title__icon span {
+.title > span.title__icon a, .title > span.title__icon span {
   color: inherit;
   font-size: 16px;
+  cursor: help;
 }
 
 #hotValidators {
@@ -907,7 +911,6 @@ body {
 
 .tooltip {
   position: relative;
-  margin: auto initial;
 }
 .tooltip a::before {
   visibility: hidden;
@@ -954,6 +957,22 @@ body {
 .tooltip:hover a::after, .tooltip:hover a::before {
   visibility: visible;
   opacity: 1;
+}
+
+#footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 10px 10px 10px;
+  font-size: 14px;
+}
+@media (max-width: 900px) {
+  #footer {
+    flex-direction: column;
+    padding-bottom: 20px;
+  }
+  #footer > p {
+    margin: 5px 0;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
